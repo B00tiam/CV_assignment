@@ -1,8 +1,12 @@
 # importing the module
 import cv2
 
+from cameraCal import get_corners
+
 # function to display the coordinates of
 # of the points clicked on the image
+
+
 def click_event(event, x, y, flags, params):
 
 	# checking for left mouse clicks
@@ -42,9 +46,11 @@ def click_event(event, x, y, flags, params):
 # driver function
 if __name__=="__main__":
 
-	# reading the image
-	img = cv2.imread('lena.jpg', 1)
 
+	# finding func
+	get_corners()
+
+'''
 	# displaying the image
 	cv2.imshow('image', img)
 
@@ -57,3 +63,4 @@ if __name__=="__main__":
 
 	# close the window
 	cv2.destroyAllWindows()
+'''
