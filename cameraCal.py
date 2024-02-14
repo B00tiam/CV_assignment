@@ -39,7 +39,7 @@ def get_corners():
             cv.namedWindow('img', cv.WINDOW_NORMAL)
             cv.resizeWindow('img', img.shape[1], img.shape[0])
 
-            print(fname)   # Get the path of valid pics
+            print(fname + "-valid")   # Get the path of valid pics
             '''
             valid pics (temp)
             chessboards\board1.jpg
@@ -68,5 +68,10 @@ def get_corners():
             # Show the imgs
             cv.imshow('img', img)
             cv.waitKey(15000)   # Adjustable according to user's device
+
+        else:
+            print(fname + "-invalid")   # Get the path of valid pics
+
+            # Interface to click event:
 
     cv.destroyAllWindows()
