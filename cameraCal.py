@@ -39,8 +39,22 @@ def get_corners():
             cv.namedWindow('img', cv.WINDOW_NORMAL)
             cv.resizeWindow('img', img.shape[1], img.shape[0])
 
+            print(fname)
+            '''
+            valid pics (temp)
+            chessboards\board11.jpg
+            chessboards\board13.jpg
+            chessboards\board14.jpg
+            chessboards\board16.jpg
+            chessboards\board18.jpg
+            chessboards\board22.jpg
+            chessboards\board24.jpg
+            chessboards\board25.jpg
+            chessboards\board4.jpg
+            chessboards\board9.jpg
+            '''
             # Show the imgs
             cv.imshow('img', img)
-            cv.waitKey(25000)   # Adjustable according to user's device
+            cv.waitKey(10000)   # Adjustable according to user's device
 
     cv.destroyAllWindows()
