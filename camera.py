@@ -3,6 +3,7 @@ import cv2 as cv
 import glob
 
 from click import click_event
+from calibrate import calibrate
 
 def get_corners():
     # Specify the path to the images
@@ -71,7 +72,8 @@ def get_corners():
             cv.imshow('img', img)
             cv.waitKey(15000)   # Adjustable according to user's device
 
-            # Interface to 
+            # Interface to calibration
+            calibrate(objpoints, imgpoints, gray, img)
 
         else:
             print(fname + "-invalid")   # Get the path of valid pics
