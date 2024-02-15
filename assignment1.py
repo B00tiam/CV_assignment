@@ -1,7 +1,7 @@
 # importing the module
 
 from click import click_event
-from cameraCal import get_corners
+from camera import get_corners
 
 
 

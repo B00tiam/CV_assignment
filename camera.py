@@ -2,6 +2,8 @@ import numpy as np
 import cv2 as cv
 import glob
 
+from click import click_event
+
 def get_corners():
     # Specify the path to the images
     image_path_pattern = 'chessboards/*.jpg'
@@ -68,6 +70,8 @@ def get_corners():
             # Show the imgs
             cv.imshow('img', img)
             cv.waitKey(15000)   # Adjustable according to user's device
+
+            # Interface to 
 
         else:
             print(fname + "-invalid")   # Get the path of valid pics

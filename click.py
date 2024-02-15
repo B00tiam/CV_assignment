@@ -21,7 +21,7 @@ def click_event(event, x, y, flags, params):
 		cv.imshow('image', img)
 
 	# checking for right mouse clicks
-	if event==cv.EVENT_RBUTTONDOWN:
+	if event == cv.EVENT_RBUTTONDOWN:
 
 		# displaying the coordinates
 		# on the Shell
