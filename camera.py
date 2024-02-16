@@ -2,9 +2,8 @@ import numpy as np
 import cv2 as cv
 import glob
 
-from click import click_event
+from click import manual_process
 from calibrate import calibrate
-from functools import partial
 
 
 
@@ -14,6 +13,7 @@ def get_corners():
 
     # Create a list of image file paths
     images = glob.glob(image_path_pattern)
+    images_invalid = []
 
     # Termination criteria
     criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
@@ -87,14 +87,10 @@ def get_corners():
         else:
             print(fname + "-invalid")   # Get the path of valid pics
 
-            # Interface to click event:
-            # Reshape the window
-            cv.namedWindow('image', cv.WINDOW_NORMAL)
-            cv.resizeWindow('image', img.shape[1], img.shape[0])
-            cv.imshow('img', img)
-            # cv.setMouseCallback('img', partial(click_event, img=img))
-            cv.setMouseCallback('img', lambda event, x, y, flags, img=img: click_event(event, x, y, flags, img))
-
-            cv.waitKey(10000)
+            # collect the invalid path
+            images_invalid.append(fname)
 
     cv.destroyAllWindows()
+
+    # Interface to click functions
+    manual_process(images_invalid)

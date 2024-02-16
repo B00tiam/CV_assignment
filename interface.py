@@ -2,7 +2,7 @@ import numpy as np
 import cv2 as cv
 import glob
 
-folder_path = 'C:\\Users\\luiho\\OneDrive\\Desktop\\AI\\AI sem 1 (periods 3-4)\\CompVis\\chessboards'
+folder_path = 'chessboards'
 image_path_pattern = f'{folder_path}\\*.jpg'
 # Create a list of image file paths
 images = glob.glob(image_path_pattern)

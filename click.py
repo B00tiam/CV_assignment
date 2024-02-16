@@ -3,69 +3,42 @@ import numpy as np
 
 # function to display the coordinates of
 # of the points clicked on the image
-manual_corners = []
-def click_event(event, x, y, flags, params, img):
 
-	# checking for left mouse clicks
+stored_coordinates = None
+img = None
+
+# function to get the param img
+
+def manual_process(images_invalid):
+
+	for fname in images_invalid:
+		stored_coordinates = []
+		img = cv.imread(fname, 1)
+		# cv.setMouseCallback('img', lambda event, x, y, flags, img=img: click_event(event, x, y, flags, img))
+		# Reshape the window
+		cv.namedWindow('img', cv.WINDOW_NORMAL)
+		cv.resizeWindow('img', img.shape[1], img.shape[0])
+
+		cv.setMouseCallback('img', click_event, {'stored_coordinates': stored_coordinates, 'img': img})
+
+		cv.imshow('img', img)
+		cv.waitKey(0)
+
+		cv.destroyAllWindows()
+
+
+def click_event(event, x, y, flags, params):
 	if event == cv.EVENT_LBUTTONDOWN:
-		# displaying the coordinates
-		# on the Shell
-		manual_corners.append((x, y))
-		print(x, ' ', y)
-
-		# displaying the coordinates
-		# on the image window
+		print(x, '', y)
 		font = cv.FONT_HERSHEY_SIMPLEX
-		cv.putText(img, str(x) + ',' +
-					str(y), (x, y), font,
-					1, (255, 0, 0), 2)
-		cv.imshow('image', img)
+		cv.putText(params['img'], str(x) + ',' + str(y), (x, y), font, 1, (255, 0, 0), 2)
+		cv.imshow('img', params['img'])
+		params['stored_coordinates'].append((x, y))
 
-	# checking for right mouse clicks
-	if event == cv.EVENT_RBUTTONDOWN:
-		# displaying the coordinates
-		# on the Shell
-		manual_corners.append((x, y))
-		print(x, ' ', y)
-
-		# displaying the coordinates
-		# on the image window
-		font = cv.FONT_HERSHEY_SIMPLEX
-		b = img[y, x, 0]
-		g = img[y, x, 1]
-		r = img[y, x, 2]
-		cv.putText(img, str(b) + ',' +
-					str(g) + ',' + str(r),
-					(x, y), font, 1,
-					(255, 255, 0), 2)
-		cv.imshow('image', img)
-
-	cv.waitKey(10000)
-
-	lengths = [5, 8, 5, 8]
-	manual_corners.append(manual_corners[0])
-	for i in range(0, len(manual_corners) - 1):
-		l = lengths[i]
-		a = manual_corners[i]
-		b = manual_corners[i + 1]
-		xy0 = np.array(a)
-		xy1 = np.array(b)
-		interp = np.linspace(start=xy0, stop=xy1, num=l + 1)
-		print(interp)
-		print('')
-
-		for xy in interp:
-			x, y = xy
-			x = int(x.item());
-			y = int(y.item())
-			print(x, y)
-			font = cv.FONT_HERSHEY_SIMPLEX
-			cv.circle(img, (x, y), 6, (0, 0, 255), -1)
-			cv.imshow('image', img)
-			cv.waitKey(0)
-
-	# close the window
-	# cv.waitKey(10000)
-	cv.destroyAllWindows()
+		# Draw corners only if the correct number of corners is reached
+		if len(params['stored_coordinates']) == 54:
+			cv.drawChessboardCorners(params['img'], (9, 6), np.array(params['stored_coordinates']), True)
+			cv.imshow('img', params['img'])
+			cv.waitKey(500)
 
 

@@ -69,6 +69,7 @@ manual_corners = []
 def click_event(event, x, y, flags, params):
     # checking for left mouse clicks
     if event == cv2.EVENT_LBUTTONDOWN:
+
         # displaying the coordinates
         # on the Shell
         manual_corners.append((x, y))
