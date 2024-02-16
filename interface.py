@@ -2,16 +2,21 @@ import numpy as np
 import cv2 as cv
 import glob
 
+def interpolate_internal_corners(external_corners, rows, cols):
+    external_corners = external_corners.reshape(4, 2)
+    top_edge = np.linspace(external_corners[0], external_corners[1], num=cols)
+    bottom_edge = np.linspace(external_corners[3], external_corners[2], num=cols)
+    return np.vstack([np.linspace(top_edge[i], bottom_edge[i], num=rows) for i in range(cols)])
+
 folder_path = 'C:\\Users\\luiho\\OneDrive\\Desktop\\AI\\AI sem 1 (periods 3-4)\\CompVis\\chessboards'
 image_path_pattern = f'{folder_path}\\*.jpg'
-# Create a list of image file paths
 images = glob.glob(image_path_pattern)
 
 # termination criteria
 criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
-objp = np.zeros((6*9,3), np.float32)
-objp[:,:2] = np.mgrid[0:9,0:6].T.reshape(-1,2)
+objp = np.zeros((6*9, 3), np.float32)
+objp[:, :2] = np.mgrid[0:6, 0:9].T.reshape(-1, 2)
 
 # Arrays to store object points and image points from all the images.
 objpoints = []  # 3d point in real world space
@@ -53,8 +58,11 @@ for fname in images:
                 params['stored_coordinates'].append((x, y))
 
                 # Draw corners only if the correct number of corners is reached
-                if len(params['stored_coordinates']) == 54:
-                    cv.drawChessboardCorners(params['img'], (9, 6), np.array(params['stored_coordinates']), True)
+                if len(params['stored_coordinates']) == 4:
+                    external_corners = np.array(params['stored_coordinates'],  dtype=np.float32)
+                    interpolated_coordinates = interpolate_internal_corners(external_corners, rows=6, cols=9)
+                    interpolated_coordinates2 = cv.cornerSubPix(gray, interpolated_coordinates, (11, 11), (-1, -1), criteria)
+                    cv.drawChessboardCorners(params['img'], (9, 6), interpolated_coordinates2, True)
                     cv.imshow('img', params['img'])
                     cv.waitKey(500)
 
