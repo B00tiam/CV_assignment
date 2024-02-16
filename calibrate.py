@@ -3,12 +3,16 @@ import cv2 as cv
 
 
 def calibrate(objpoints, imgpoints, gray, img):
+    # Load test image
+    testpath = "chessboards/board8.jpg"
+    img = cv.imread(testpath)
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     # Calibration
     ret, mtx, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
     # Print the intrinsic matrix and distortion coefficient
-    print("intrinsic matrix: \n", mtx)
-    print("distortion coefficient: \n", dist)
+    print("Intrinsic matrix: \n", mtx)
+    print("Distortion coefficient: \n", dist)
 
     # Undistort the image
     undistorted_img = cv.undistort(img, mtx, dist, None, mtx)

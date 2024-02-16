@@ -36,8 +36,13 @@ def click_event(event, x, y, flags, params):
 		params['stored_coordinates'].append((x, y))
 
 		# Draw corners only if the correct number of corners is reached
-		if len(params['stored_coordinates']) == 54:
+		if len(params['stored_coordinates']) >= 6 * 9:
+			# Draw and display the corners and lines
 			cv.drawChessboardCorners(params['img'], (9, 6), np.array(params['stored_coordinates']), True)
+			for i in range(1, len(params['stored_coordinates'])):
+				cv.line(params['img'], tuple(params['stored_coordinates'][i - 1]),
+						tuple(params['stored_coordinates'][i]), (0, 255, 0), 2)
+
 			cv.imshow('img', params['img'])
 			cv.waitKey(500)
 

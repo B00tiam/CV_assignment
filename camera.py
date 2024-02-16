@@ -81,8 +81,6 @@ def get_corners():
             cv.imshow('img', img)
             cv.waitKey(15000)   # Adjustable according to user's device
 
-            # Interface to calibration
-            calibrate(objpoints, imgpoints, gray, img)
 
         else:
             print(fname + "-invalid")   # Get the path of valid pics
@@ -94,3 +92,5 @@ def get_corners():
 
     # Interface to click functions
     manual_process(images_invalid)
+    # Interface to calibration
+    calibrate(objpoints, imgpoints)
