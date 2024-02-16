@@ -4,6 +4,9 @@ import glob
 
 from click import click_event
 from calibrate import calibrate
+from functools import partial
+
+
 
 def get_corners():
     # Specify the path to the images
@@ -29,6 +32,7 @@ def get_corners():
 
         # Find the chessboard corners
         ret, corners = cv.findChessboardCorners(gray, (9, 6), None)
+
 
         # If found, add object points, image points (after refining them)
         if ret:
@@ -67,6 +71,11 @@ def get_corners():
             chessboards\board5.jpg
             chessboards\board7.jpg
             chessboards\board9.jpg
+            
+            invalid pics (temp)
+            chessboards\board23.jpg
+            chessboards\board6.jpg
+            chessboards\board8.jpg
             '''
             # Show the imgs
             cv.imshow('img', img)
@@ -79,5 +88,13 @@ def get_corners():
             print(fname + "-invalid")   # Get the path of valid pics
 
             # Interface to click event:
+            # Reshape the window
+            cv.namedWindow('image', cv.WINDOW_NORMAL)
+            cv.resizeWindow('image', img.shape[1], img.shape[0])
+            cv.imshow('img', img)
+            # cv.setMouseCallback('img', partial(click_event, img=img))
+            cv.setMouseCallback('img', lambda event, x, y, flags, img=img: click_event(event, x, y, flags, img))
+
+            cv.waitKey(10000)
 
     cv.destroyAllWindows()

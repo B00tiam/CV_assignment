@@ -106,7 +106,7 @@ def click_event(event, x, y, flags, params):
 
 if __name__ == "__main__":
     # reading the image
-    img = cv2.imread('C:\\Users\\luiho\\OneDrive\\Desktop\\AI\\AI sem 1 (periods 3-4)\\CompVis\\chessboards\\board2.jpg', 1)
+    img = cv2.imread('chessboards\\board8.jpg', 1)
 
     cv2.namedWindow('image', cv2.WINDOW_NORMAL)
     cv2.resizeWindow('image', img.shape[1], img.shape[0])

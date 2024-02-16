@@ -1,6 +1,5 @@
 # importing the module
 
-from click import click_event
 from camera import get_corners
 
 
