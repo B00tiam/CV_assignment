@@ -60,9 +60,14 @@ for fname in images:
                 # Draw corners only if the correct number of corners is reached
                 if len(params['stored_coordinates']) == 4:
                     external_corners = np.array(params['stored_coordinates'],  dtype=np.float32)
+                    print('External Corners:', external_corners)
+
                     interpolated_coordinates = interpolate_internal_corners(external_corners, rows=6, cols=9)
-                    interpolated_coordinates2 = cv.cornerSubPix(gray, interpolated_coordinates, (11, 11), (-1, -1), criteria)
-                    cv.drawChessboardCorners(params['img'], (9, 6), interpolated_coordinates2, True)
+                    print('Interpolated coordinates', interpolated_coordinates)
+
+                    interpolated_coordinates2 = cv.cornerSubPix(gray, interpolated_coordinates, (80, 80), (-1, -1), criteria)
+                    print('Subpixel Corners:', interpolated_coordinates2)
+                    cv.drawChessboardCorners(params['img'], (6, 9), interpolated_coordinates2, True)
                     cv.imshow('img', params['img'])
                     cv.waitKey(500)
 
