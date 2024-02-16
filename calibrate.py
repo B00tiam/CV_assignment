@@ -15,8 +15,6 @@ def calibrate(objpoints, imgpoints, gray, img):
 
     # Draw 3D axes
 
-
-
     # Show the image
     # Adjust the size of window
     cv.namedWindow('undistorted img', cv.WINDOW_NORMAL)
