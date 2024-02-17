@@ -1,10 +1,12 @@
 import numpy as np
 import cv2 as cv
 
+# def axs_paint():
+
 
 def calibrate(objpoints, imgpoints):
     # Load test image
-    testpath = 'chessboard/board15.jpg'
+    testpath = ('chessboard/board25.jpg')
     img = cv.imread(testpath)
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     # Termination criteria
@@ -23,7 +25,15 @@ def calibrate(objpoints, imgpoints):
     print("Distortion coefficient: \n", dist)
 
     # Undistort the image
-    # undistorted_img = cv.undistort(img, mtx, dist, None, mtx)
+    h, w = img.shape[:2]
+    new_mtx, roi = cv.getOptimalNewCameraMatrix(mtx, dist, (w, h), 1, (w, h))
+    undistorted_img = cv.undistort(img, mtx, dist, None, new_mtx)
+    x, y, w, h = roi
+    undistorted_img = undistorted_img[y:y+h, x:x+w]
+    cv.namedWindow('undistorted img', cv.WINDOW_NORMAL)
+    cv.resizeWindow('undistorted img', undistorted_img.shape[1], img.shape[0])
+    cv.imshow('undistorted img', undistorted_img)
+    cv.waitKey(10000)
 
     # Draw 3D axes
     ret, corners = cv.findChessboardCorners(gray, (9, 6), None)
