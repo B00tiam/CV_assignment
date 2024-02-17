@@ -8,6 +8,19 @@ def interpolate_internal_corners(external_corners, rows, cols):
     bottom_edge = np.linspace(external_corners[3], external_corners[2], num=cols)
     return np.vstack([np.linspace(top_edge[i], bottom_edge[i], num=rows) for i in range(cols)])
 
+def determine_chessboard_orientation(external_corners):
+    # Calculate distances between clicked corners
+    distances = np.linalg.norm(np.diff(external_corners, axis=0), axis=1)
+
+    # Determine orientation based on distances
+    if np.allclose(distances[::2], distances[0]):
+        return 6, 9  # Orientation: 6x9
+    elif np.allclose(distances[1::2], distances[1]):
+        return 9, 6  # Orientation: 9x6
+    else:
+        return None  # Unable to determine orientation
+
+
 folder_path = 'C:\\Users\\luiho\\OneDrive\\Desktop\\AI\\AI sem 1 (periods 3-4)\\CompVis\\chessboards'
 image_path_pattern = f'{folder_path}\\*.jpg'
 images = glob.glob(image_path_pattern)
@@ -25,7 +38,7 @@ imgpoints = []  # 2d points in image plane.
 for fname in images:
     img = cv.imread(fname)
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    # Find the chess board corners
+    # Find the chessboard corners
     ret, corners = cv.findChessboardCorners(gray, (9, 6), None)
     # If found, add object points, image points (after refining them)
     if ret:
@@ -57,25 +70,31 @@ for fname in images:
                 cv.imshow('img', params['img'])
                 params['stored_coordinates'].append((x, y))
 
-                # Draw corners only if the correct number of corners is reached
-                if len(params['stored_coordinates']) == 4:
-                    external_corners = np.array(params['stored_coordinates'],  dtype=np.float32)
+                # Draw corners only if enough corners are reached
+                if len(params['stored_coordinates']) >= 4:
+                    external_corners = np.array(params['stored_coordinates'], dtype=np.float32)
                     print('External Corners:', external_corners)
 
-                    interpolated_coordinates = interpolate_internal_corners(external_corners, rows=6, cols=9)
-                    print('Interpolated coordinates', interpolated_coordinates)
+                    # Determine chessboard orientation
+                    rows, cols = determine_chessboard_orientation(external_corners)
+                    if rows and cols:
+                        interpolated_coordinates = interpolate_internal_corners(external_corners, rows, cols)
+                        print('Interpolated coordinates:', interpolated_coordinates)
 
-                    interpolated_coordinates2 = cv.cornerSubPix(gray, interpolated_coordinates, (80, 80), (-1, -1), criteria)
-                    print('Subpixel Corners:', interpolated_coordinates2)
-                    cv.drawChessboardCorners(params['img'], (6, 9), interpolated_coordinates2, True)
-                    cv.imshow('img', params['img'])
-                    cv.waitKey(500)
+                        interpolated_coordinates2 = cv.cornerSubPix(gray, interpolated_coordinates, (80, 80), (-1, -1), criteria)
+                        print('Subpixel Corners:', interpolated_coordinates2)
+
+                        cv.drawChessboardCorners(params['img'], (cols, rows), interpolated_coordinates, True)
+                        cv.imshow('img', params['img'])
+                        cv.waitKey(500)
+                    else:
+                        print('Unable to determine chessboard orientation.')
 
         cv.setMouseCallback('img', click_event, {'stored_coordinates': stored_coordinates, 'img': img})
 
         cv.imshow('img', img)
         cv.waitKey(0)
 
-print('manually selected coordinates: ')
+print('Manually selected coordinates:')
 print(stored_coordinates)
 cv.destroyAllWindows()
