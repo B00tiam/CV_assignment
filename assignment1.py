@@ -8,6 +8,6 @@ from camera import get_corners
 if __name__=="__main__":
 
 
-	# finding func
+	# camera func
 	get_corners()
 
