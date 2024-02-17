@@ -79,7 +79,7 @@ def get_corners():
             '''
             # Show the imgs
             cv.imshow('img', img)
-            cv.waitKey(2500)   # Adjustable according to user's device
+            cv.waitKey(2000)   # Adjustable according to user's device
 
 
         else:

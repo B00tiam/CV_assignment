@@ -21,7 +21,7 @@ def determine_chessboard_orientation(external_corners):
         return None  # Unable to determine orientation
 
 
-folder_path = 'C:\\Users\\luiho\\OneDrive\\Desktop\\AI\\AI sem 1 (periods 3-4)\\CompVis\\chessboards'
+folder_path = 'chessboard'
 image_path_pattern = f'{folder_path}\\*.jpg'
 images = glob.glob(image_path_pattern)
 

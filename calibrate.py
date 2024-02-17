@@ -68,7 +68,7 @@ def calibrate(objpoints, imgpoints):
         cv.resizeWindow('painted img', img.shape[1], img.shape[0])
         # cv.imshow('Original Image', img)
         cv.imshow('painted img', img)
-        cv.waitKey(20000)
+        cv.waitKey(10000)
 
     cv.destroyAllWindows()
 
