@@ -9,7 +9,7 @@ objp = np.zeros((6 * 9, 3), np.float32)
 objp[:, :2] = np.mgrid[0:9, 0:6].T.reshape(-1, 2)
 
 # Arrays to store object points and image points from all the images.
-objpoints = []  # 3d point in real world space
+objpoints = []  # 3d point in real-world space
 imgpoints = []  # 2d points in image plane.
 
 # Capture video from webcam
@@ -22,9 +22,8 @@ while True:
         break
 
     gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-    # Find the chess board corners
+    # Find the chessboard corners
     ret, corners = cv.findChessboardCorners(gray, (9, 6), None)
-    cv.imshow('webcam', frame)
 
     # If found, add object points, image points (after refining them)
     if ret == True:
@@ -32,9 +31,14 @@ while True:
         corners2 = cv.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
         imgpoints.append(corners2)
 
-        # Draw and display the corners
-        cv.drawChessboardCorners(frame, (9, 6), corners2, ret)
-        cv.imshow('Calibration', frame)
+        # Overlay chessboard corners on the original frame
+        frame_with_corners = frame.copy()
+        cv.drawChessboardCorners(frame_with_corners, (9, 6), corners2, ret)
+        alpha = 0.5  # Adjust transparency (0: fully transparent, 1: fully opaque)
+        cv.addWeighted(frame_with_corners, alpha, frame, 1 - alpha, 0, frame)
+
+    # Display the result
+    cv.imshow('Webcam with Corners', frame)
 
     # Wait for a key press and break the loop if 'q' is pressed
     if cv.waitKey(1) & 0xFF == ord('q'):
