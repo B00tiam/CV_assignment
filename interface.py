@@ -61,6 +61,7 @@ for fname in images:
         print(fname + " is invalid")
 
         stored_coordinates = []
+        interpolated_coordinates2 = []
 
         def click_event(event, x, y, flags, params):
             if event == cv.EVENT_LBUTTONDOWN:
@@ -79,10 +80,10 @@ for fname in images:
                     rows, cols = determine_chessboard_orientation(external_corners)
                     if rows and cols:
                         interpolated_coordinates = interpolate_internal_corners(external_corners, rows, cols)
-                        print('Interpolated coordinates:', interpolated_coordinates)
+                        # print('Interpolated coordinates:', interpolated_coordinates)
 
-                        interpolated_coordinates2 = cv.cornerSubPix(gray, interpolated_coordinates, (80, 80), (-1, -1), criteria)
-                        print('Subpixel Corners:', interpolated_coordinates2)
+                        params['interpolated_coordinates2'].append(cv.cornerSubPix(gray, interpolated_coordinates, (80, 80), (-1, -1), criteria))
+                        # print('Subpixel Corners:', interpolated_coordinates2)
 
                         cv.drawChessboardCorners(params['img'], (cols, rows), interpolated_coordinates, True)
                         cv.imshow('img', params['img'])
@@ -90,10 +91,11 @@ for fname in images:
                     else:
                         print('Unable to determine chessboard orientation.')
 
-        cv.setMouseCallback('img', click_event, {'stored_coordinates': stored_coordinates, 'img': img})
+        cv.setMouseCallback('img', click_event, {'stored_coordinates': stored_coordinates, 'img': img, 'interpolated_coordinates2': interpolated_coordinates2})
 
         cv.imshow('img', img)
         cv.waitKey(0)
+        print(interpolated_coordinates2)
 
 print('Manually selected coordinates:')
 print(stored_coordinates)

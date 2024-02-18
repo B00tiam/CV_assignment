@@ -1,13 +1,20 @@
 import cv2 as cv
 import numpy as np
+import math
 
 from calibrate import undistort
+from calibrate import calibrate
 
 # function to display the coordinates of
 # of the points clicked on the image
 
 stored_coordinates = None
 img = None
+
+whole_objpoints = []
+whole_imgpoints = []
+
+interpolated_coordinates = []
 
 # Linearly interpolate
 def interpolate_internal_corners(external_corners, rows, cols):
@@ -30,8 +37,15 @@ def determine_chessboard_orientation(external_corners):
         return None  # Unable to determine orientation
 
 def manual_process(images_invalid, objpoints, imgpoints):
+	whole_objpoints = objpoints
+	whole_imgpoints = imgpoints
+	# Prepare object points, like (0, 0, 0), (1, 0, 0), ..., (6, 5, 0)
+	objp = np.zeros((6 * 9, 3), np.float32)
+	objp[:, :2] = np.mgrid[0:9, 0:6].T.reshape(-1, 2)
+
 
 	for fname in images_invalid:
+		whole_objpoints.append(objp)
 		stored_coordinates = []
 		img = cv.imread(fname, 1)
 		gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
@@ -45,12 +59,17 @@ def manual_process(images_invalid, objpoints, imgpoints):
 		cv.namedWindow('img', cv.WINDOW_NORMAL)
 		cv.resizeWindow('img', img.shape[1], img.shape[0])
 
-		cv.setMouseCallback('img', click_event, {'stored_coordinates': stored_coordinates, 'img': img, 'gray': gray, 'criteria': criteria})
+		cv.setMouseCallback('img', click_event, {'stored_coordinates': stored_coordinates, 'img': img, 'gray': gray, 'criteria': criteria, 'interpolated_coordinates': interpolated_coordinates})
 
 		cv.imshow('img', img)
 		cv.waitKey(0)
 
 		cv.destroyAllWindows()
+		# print('Subpixel Corners:', interpolated_coordinates)
+		whole_imgpoints.append(np.reshape(interpolated_coordinates, (54, 1, 2)))
+		interpolated_coordinates.clear()
+
+	calibrate(whole_objpoints, whole_imgpoints)
 
 
 def click_event(event, x, y, flags, params):
@@ -69,13 +88,13 @@ def click_event(event, x, y, flags, params):
 			# Determine chessboard orientation
 			rows, cols = determine_chessboard_orientation(external_corners)
 			if rows and cols:
-				interpolated_coordinates = interpolate_internal_corners(external_corners, rows, cols)
-				print('Interpolated coordinates:', interpolated_coordinates)
+				ic = interpolate_internal_corners(external_corners, rows, cols)
+				# print('Interpolated coordinates:', interpolated_coordinates)
 
-				interpolated_coordinates2 = cv.cornerSubPix(params['gray'], interpolated_coordinates, (80, 80), (-1, -1), params['criteria'])
-				print('Subpixel Corners:', interpolated_coordinates2)
+				params['interpolated_coordinates'].append(cv.cornerSubPix(params['gray'], ic, (11, 11), (-1, -1), params['criteria']))
+				# print('Subpixel Corners:', interpolated_coordinates)
 
-				cv.drawChessboardCorners(params['img'], (cols, rows), interpolated_coordinates, True)
+				cv.drawChessboardCorners(params['img'], (cols, rows), ic, True)
 				cv.imshow('img', params['img'])
 				cv.waitKey(500)
 			else:

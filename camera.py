@@ -39,6 +39,7 @@ def get_corners():
             objpoints.append(objp)
             corners2 = cv.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
             imgpoints.append(corners2)
+            # print(corners2)
 
             # Draw and display the corners
             cv.drawChessboardCorners(img, (9, 6), corners2, ret)
@@ -79,7 +80,7 @@ def get_corners():
             '''
             # Show the imgs
             cv.imshow('img', img)
-            cv.waitKey(1500)   # Adjustable according to user's device
+            cv.waitKey(1000)   # Adjustable according to user's device
 
 
         else:
@@ -89,8 +90,12 @@ def get_corners():
             images_invalid.append(fname)
 
     cv.destroyAllWindows()
+    # judge the len of images_invalid
+    if len(images_invalid) == 0:
+        # Interface to calibration
+        calibrate(objpoints, imgpoints)
+    else:
+        # Interface to click functions
+        manual_process(images_invalid, objpoints, imgpoints)
 
-    # Interface to click functions
-    manual_process(images_invalid, objpoints, imgpoints)
-    # Interface to calibration
-    calibrate(objpoints, imgpoints)
+
