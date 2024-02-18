@@ -1,18 +1,22 @@
 import cv2 as cv
 import numpy as np
 
+from calibrate import undistort
+
 # function to display the coordinates of
 # of the points clicked on the image
 
 stored_coordinates = None
 img = None
 
+# Linearly interpolate
 def interpolate_internal_corners(external_corners, rows, cols):
     external_corners = external_corners.reshape(4, 2)
     top_edge = np.linspace(external_corners[0], external_corners[1], num=cols)
     bottom_edge = np.linspace(external_corners[3], external_corners[2], num=cols)
     return np.vstack([np.linspace(top_edge[i], bottom_edge[i], num=rows) for i in range(cols)])
 
+# Determine the orientation of corner points
 def determine_chessboard_orientation(external_corners):
     # Calculate distances between clicked corners
     distances = np.linalg.norm(np.diff(external_corners, axis=0), axis=1)
@@ -25,13 +29,16 @@ def determine_chessboard_orientation(external_corners):
     else:
         return None  # Unable to determine orientation
 
-def manual_process(images_invalid):
+def manual_process(images_invalid, objpoints, imgpoints):
 
 	for fname in images_invalid:
 		stored_coordinates = []
 		img = cv.imread(fname, 1)
 		gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 		criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+
+		# calibrate first
+		# img, _, _, _, _, _, _ = undistort(img, objpoints, imgpoints)
 
 		# cv.setMouseCallback('img', lambda event, x, y, flags, img=img: click_event(event, x, y, flags, img))
 		# Reshape the window

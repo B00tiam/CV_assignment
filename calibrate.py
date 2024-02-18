@@ -1,24 +1,8 @@
 import numpy as np
 import cv2 as cv
 
-# def axs_paint():
-
-
-def calibrate(objpoints, imgpoints):
-    # Load test image
-    testpath = ('chessboard/board25.jpg')
-    img = cv.imread(testpath)
+def undistort(img, objpoints, imgpoints):
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    # Termination criteria
-    criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
-
-    # Prepare object points, like (0, 0, 0), (1, 0, 0), ..., (6, 5, 0)
-    objp = np.zeros((6 * 9, 3), np.float32)
-    objp[:, :2] = np.mgrid[0:9, 0:6].T.reshape(-1, 2)
-    axis_3D = np.float32([[6, 0, 0], [0, 6, 0], [0, 0, -6]]).reshape(-1, 3)
-    axis_cube = np.float32([[0, 0, 0], [0, 3, 0], [3, 3, 0], [3, 0, 0], [0, 0, -3], [0, 3, -3], [3, 3, -3], [3, 0, -3]])
-
-
     # Calibration
     ret, mtx, dist, _, _ = cv.calibrateCamera(objpoints, imgpoints, gray.shape[::-1], None, None)
 
@@ -31,7 +15,27 @@ def calibrate(objpoints, imgpoints):
     new_mtx, roi = cv.getOptimalNewCameraMatrix(mtx, dist, (w, h), 1, (w, h))
     undistorted_img = cv.undistort(img, mtx, dist, None, new_mtx)
     x, y, w, h = roi
-    undistorted_img = undistorted_img[y:y+h, x:x+w]
+
+    return undistorted_img, mtx, dist, x, y, w, h
+
+
+def calibrate(objpoints, imgpoints):
+    # Load test image
+    testpath = ('chessboards/board25.jpg')
+    img = cv.imread(testpath)
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    # Termination criteria
+    criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+
+    # Prepare object points, like (0, 0, 0), (1, 0, 0), ..., (6, 5, 0)
+    objp = np.zeros((6 * 9, 3), np.float32)
+    objp[:, :2] = np.mgrid[0:9, 0:6].T.reshape(-1, 2)
+    axis_3D = np.float32([[6, 0, 0], [0, 6, 0], [0, 0, -6]]).reshape(-1, 3)
+    axis_cube = np.float32([[0, 0, 0], [0, 3, 0], [3, 3, 0], [3, 0, 0], [0, 0, -3], [0, 3, -3], [3, 3, -3], [3, 0, -3]])
+
+    undistorted_img, mtx, dist, x, y, w, h = undistort(img, objpoints, imgpoints)
+    undistorted_img = undistorted_img[y:y + h, x:x + w]
+
     cv.namedWindow('undistorted img', cv.WINDOW_NORMAL)
     cv.resizeWindow('undistorted img', undistorted_img.shape[1], img.shape[0])
     cv.imshow('undistorted img', undistorted_img)

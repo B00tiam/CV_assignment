@@ -9,7 +9,7 @@ from calibrate import calibrate
 
 def get_corners():
     # Specify the path to the images
-    image_path_pattern = 'chessboard/*.jpg'
+    image_path_pattern = 'chessboards/*.jpg'
 
     # Create a list of image file paths
     images = glob.glob(image_path_pattern)
@@ -79,7 +79,7 @@ def get_corners():
             '''
             # Show the imgs
             cv.imshow('img', img)
-            cv.waitKey(2000)   # Adjustable according to user's device
+            cv.waitKey(1500)   # Adjustable according to user's device
 
 
         else:
@@ -91,6 +91,6 @@ def get_corners():
     cv.destroyAllWindows()
 
     # Interface to click functions
-    manual_process(images_invalid)
+    manual_process(images_invalid, objpoints, imgpoints)
     # Interface to calibration
     calibrate(objpoints, imgpoints)
