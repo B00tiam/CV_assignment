@@ -21,7 +21,7 @@ def undistort(img, objpoints, imgpoints):
 
 def calibrate(objpoints, imgpoints):
     # Load test image
-    testpath = ('chessboards/board21.jpg')
+    testpath = ('chessboards/run1/board25.jpg')
     img = cv.imread(testpath)
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     # Termination criteria

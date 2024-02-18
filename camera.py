@@ -5,15 +5,46 @@ import glob
 from click import manual_process
 from calibrate import calibrate
 
+# Pre-process of img:
+# Evaluate the quality of img
+def quality_evaluate(img, gray):
+    # calculate blur score and brightness
+    blur = cv.Laplacian(gray, cv.CV_64F).var()
+    bright = np.mean(img)
 
+    # compare
+    if blur < 100 or bright < 100:
+        return False  # low quality
+    else:
+        return True  # high quality
 
-def get_corners():
+# Promote the quality of pics
+def promotion(img):
+    # enhance edges
+    img = cv.Laplacian(img, cv.CV_8U)
+    # reduce blur
+    aver_kernel = np.ones((3, 3), dtype=np.float32) / 9.0   # define average filter
+    img = cv.filter2D(img, -1, aver_kernel)
+    return img
+
+def get_corners(path):
     # Specify the path to the images
-    image_path_pattern = 'chessboards/*.jpg'
+    image_path_pattern = path + '*.jpg'
 
     # Create a list of image file paths
-    images = glob.glob(image_path_pattern)
+    pre_images = glob.glob(image_path_pattern)
+    images = []
     images_invalid = []
+
+    # Evaluate quality
+
+    for fname in pre_images:
+        img = cv.imread(fname)
+        gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+        if quality_evaluate(img, gray) == True:
+            images.append(fname)
+        else:
+            print("low quality: " + fname)
 
     # Termination criteria
     criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
@@ -28,8 +59,11 @@ def get_corners():
 
     for fname in images:
         img = cv.imread(fname)
-        gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
+        # Promotion
+        # img = promotion(img)
+
+        gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
         # Find the chessboard corners
         ret, corners = cv.findChessboardCorners(gray, (9, 6), None)
 
@@ -50,33 +84,33 @@ def get_corners():
             print(fname + "-valid")   # Get the path of valid pics
             '''
             valid pics (temp)
-            chessboards\board1.jpg
-            chessboards\board10.jpg
-            chessboards\board11.jpg
-            chessboards\board12.jpg
-            chessboards\board13.jpg
-            chessboards\board14.jpg
-            chessboards\board15.jpg
-            chessboards\board16.jpg
-            chessboards\board17.jpg
-            chessboards\board18.jpg
-            chessboards\board19.jpg
-            chessboards\board2.jpg
-            chessboards\board20.jpg
-            chessboards\board21.jpg
-            chessboards\board22.jpg
-            chessboards\board24.jpg
-            chessboards\board25.jpg
-            chessboards\board3.jpg
-            chessboards\board4.jpg
-            chessboards\board5.jpg
-            chessboards\board7.jpg
-            chessboards\board9.jpg
+            board1.jpg
+            board10.jpg
+            board11.jpg
+            board12.jpg
+            board13.jpg
+            board14.jpg
+            board16.jpg
+            board18.jpg
+            board19.jpg
+            board2.jpg
+            board20.jpg
+            board21.jpg
+            board22.jpg
+            board24.jpg
+            board25.jpg
+            board3.jpg
+            board4.jpg
+            board5.jpg
+            board7.jpg
+            board9.jpg
             
             invalid pics (temp)
-            chessboards\board23.jpg
-            chessboards\board6.jpg
-            chessboards\board8.jpg
+            board15.jpg
+            board17.jpg
+            board23.jpg
+            board6.jpg
+            board8.jpg
             '''
             # Show the imgs
             cv.imshow('img', img)
