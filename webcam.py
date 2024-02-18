@@ -56,13 +56,13 @@ while True:
             y_line_end = tuple(np.round(imgpts_3D[1].ravel()).astype(int))
             z_line_end = tuple(np.round(imgpts_3D[2].ravel()).astype(int))
 
-            frame = cv.line(frame, corner, x_line_end, (255, 0, 0), 2)
-            frame = cv.line(frame, corner, y_line_end, (0, 255, 0), 2)
+            frame = cv.line(frame, corner, x_line_end, (0, 0, 255), 2)
+            frame = cv.line(frame, corner, y_line_end, (0, 0, 255), 2)
             frame = cv.line(frame, corner, z_line_end, (0, 0, 255), 2)
 
             # Add labels for X, Y, and Z axes
-            frame = cv.putText(frame, 'X', x_line_end, cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv.LINE_AA)
-            frame = cv.putText(frame, 'Y', y_line_end, cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv.LINE_AA)
+            frame = cv.putText(frame, 'X', x_line_end, cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv.LINE_AA)
+            frame = cv.putText(frame, 'Y', y_line_end, cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv.LINE_AA)
             frame = cv.putText(frame, 'Z', z_line_end, cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv.LINE_AA)
 
             # Draw the cube
@@ -76,7 +76,7 @@ while True:
             frame = cv.drawContours(frame, [imgpts_cube[4:]], -1, (0, 0, 255), 2)
 
     # Display the result
-    cv.imshow('Webcam', frame)
+    cv.imshow('Webcam with Axes, Labels, and Cube', frame)
 
     # Wait for a key press and break the loop if 'q' is pressed
     if cv.waitKey(1) & 0xFF == ord('q'):
