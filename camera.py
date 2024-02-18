@@ -29,7 +29,7 @@ def promotion(img):
 
 def get_corners(path):
     # Specify the path to the images
-    image_path_pattern = path + '*.jpg'
+    image_path_pattern = path + '/*.jpg'
 
     # Create a list of image file paths
     pre_images = glob.glob(image_path_pattern)
