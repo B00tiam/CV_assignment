@@ -21,7 +21,7 @@ def undistort(img, objpoints, imgpoints):
 
 def calibrate(objpoints, imgpoints):
     # Load test image
-    testpath = ('chessboards/run1/board25.jpg')
+    testpath = ('chessboards/run1/board9.jpg')
     img = cv.imread(testpath)
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     # Termination criteria
@@ -75,6 +75,7 @@ def calibrate(objpoints, imgpoints):
         # cv.imshow('Original Image', img)
         cv.imshow('painted img', img)
         cv.waitKey(10000)
+        cv.imwrite('chessboards/results/r3.jpg', img)
 
     cv.destroyAllWindows()
 
