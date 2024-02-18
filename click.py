@@ -36,6 +36,7 @@ def determine_chessboard_orientation(external_corners):
     else:
         return None  # Unable to determine orientation
 
+# Manual detection
 def manual_process(images_invalid, objpoints, imgpoints):
 	whole_objpoints = objpoints
 	whole_imgpoints = imgpoints

@@ -1,6 +1,7 @@
 import numpy as np
 import cv2 as cv
 
+# Undistort the photo
 def undistort(img, objpoints, imgpoints):
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     # Calibration

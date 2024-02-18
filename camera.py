@@ -21,12 +21,12 @@ def quality_evaluate(img, gray):
 # Promote the quality of pics
 def promotion(img):
     # enhance edges
-    img = cv.Laplacian(img, cv.CV_8U)
+    # img = cv.Laplacian(img, cv.CV_8U)
     # reduce blur
-    aver_kernel = np.ones((3, 3), dtype=np.float32) / 9.0   # define average filter
-    img = cv.filter2D(img, -1, aver_kernel)
+    img = cv.GaussianBlur(img, (9, 9), 1.5)
     return img
 
+# Detection automatically and Manually
 def get_corners(path):
     # Specify the path to the images
     image_path_pattern = path + '/*.jpg'
@@ -59,9 +59,6 @@ def get_corners(path):
 
     for fname in images:
         img = cv.imread(fname)
-
-        # Promotion
-        # img = promotion(img)
 
         gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
         # Find the chessboard corners
@@ -132,4 +129,62 @@ def get_corners(path):
         # Interface to click functions
         manual_process(images_invalid, objpoints, imgpoints)
 
+'''
+# Test code for promotion:
+image_path_pattern = 'chessboards/run2/*.jpg'
 
+# Create a list of image file paths
+images = glob.glob(image_path_pattern)
+
+# Arrays to store object points and image points from all the images.
+objpoints = []
+imgpoints = []
+# Termination criteria
+criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+
+# Prepare object points, like (0, 0, 0), (1, 0, 0), ..., (6, 5, 0)
+objp = np.zeros((6 * 9, 3), np.float32)
+objp[:, :2] = np.mgrid[0:9, 0:6].T.reshape(-1, 2)
+
+for fname in images:
+    img = cv.imread(fname)
+    print(fname)
+    # Before promotion
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    # Find the chessboard corners
+    ret, corners = cv.findChessboardCorners(gray, (9, 6), None)
+
+    # If found, add object points, image points (after refining them)
+    if ret:
+        objpoints.append(objp)
+        corners2 = cv.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
+        imgpoints.append(corners2)
+        # Draw and display the corners
+        cv.drawChessboardCorners(img, (9, 6), corners2, ret)
+        # Adjust the size of window
+        cv.namedWindow('img1', cv.WINDOW_NORMAL)
+        cv.resizeWindow('img1', img.shape[1], img.shape[0])
+        # Show the imgs
+        cv.imshow('img1', img)
+        cv.waitKey(0)  # Adjustable according to user's device
+
+    # After promotion
+    img = promotion(img)
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    # Find the chessboard corners
+    ret, corners = cv.findChessboardCorners(gray, (9, 6), None)
+
+    # If found, add object points, image points (after refining them)
+    if ret:
+        objpoints.append(objp)
+        corners2 = cv.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
+        imgpoints.append(corners2)
+        # Draw and display the corners
+        cv.drawChessboardCorners(img, (9, 6), corners2, ret)
+        # Adjust the size of window
+        cv.namedWindow('img2', cv.WINDOW_NORMAL)
+        cv.resizeWindow('img2', img.shape[1], img.shape[0])
+        # Show the imgs
+        cv.imshow('img2', img)
+        cv.waitKey(0)  # Adjustable according to user's device
+'''
