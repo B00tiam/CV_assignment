@@ -38,12 +38,14 @@ def calc_bg_avg(video_path):
 
     return background_avg
 
-root_dir = 'C:\\Users\\luiho\\PycharmProjects\\CV_assignment\\Assignment_2\\data'
+script_dir = os.path.dirname(os.path.abspath(__file__))
+root_dir = os.path.join(script_dir, 'data')
 
 camera_dirs = ['cam1', 'cam2', 'cam3', 'cam4']
 
 # iterate over each camera directory which has 'background.avi'
 for cam_dir in camera_dirs:
+    print(os.path.join(root_dir, cam_dir, 'background.avi'))
     video_path = os.path.join(root_dir, cam_dir, 'background.avi')
     background = calc_bg_avg(video_path)
     # save the background model as image for subtraction

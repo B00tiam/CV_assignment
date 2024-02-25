@@ -40,7 +40,8 @@ def subtract_background(video_path, background_model_path):
     cap.release()
     cv2.destroyAllWindows()
 
-root_dir = "C:\\Users\\luiho\\PycharmProjects\\CV_assignment\\Assignment_2\\data"
+script_dir = os.path.dirname(os.path.abspath(__file__))
+root_dir = os.path.join(script_dir, 'data')
 camera_dirs = ['cam1', 'cam2', 'cam3', 'cam4']
 
 for cam_dir in camera_dirs:
