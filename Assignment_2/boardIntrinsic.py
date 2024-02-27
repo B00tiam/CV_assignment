@@ -88,7 +88,7 @@ def get_intrinsic(video_path, xml_path, board_path):
             break
     # Camera calibration (randomly use 30 of frames)
     combinedpoints = list(zip(objpoints, imgpoints))
-    randomnum = random.sample(combinedpoints, k=30)
+    randomnum = random.sample(combinedpoints, k=50)
     objpoints, imgpoints = zip(*randomnum)
     ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, image_size, None, None)
     # Release the capture
@@ -102,15 +102,32 @@ def get_intrinsic(video_path, xml_path, board_path):
     # print(mtx)
     # print(dist)
 
+def run_intrinsic():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    root_dir = os.path.join(script_dir, 'data')
+    camera_dirs = ['cam1', 'cam2', 'cam3', 'cam4']
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-root_dir = os.path.join(script_dir, 'data')
-camera_dirs = ['cam1', 'cam2', 'cam3', 'cam4']
+    index = int(input("Please choose the cam you want to start:(1, 2, 3 or 4) "))
+    # determine start which run
+    if index == 1:
+        cam_dir = camera_dirs[index - 1]
+    elif index == 2:
+        cam_dir = camera_dirs[index - 1]
+    elif index == 3:
+        cam_dir = camera_dirs[index - 1]
+    elif index == 4:
+        cam_dir = camera_dirs[index - 1]
+    else:
+        cam_dir = -1
+        print("False!")
+        exit()
 
-for cam_dir in camera_dirs:
+
     video_path = os.path.join(root_dir, cam_dir, 'intrinsics.avi')
     xml_path = os.path.join(root_dir, cam_dir)
     board_path = os.path.join(root_dir, 'checkerboard.xml')
     print(f"Obtained cam path: {video_path}")
     get_intrinsic(video_path, xml_path, board_path)
     print(f"Obtained intrinsic matrix for {cam_dir}")
+
+run_intrinsic()

@@ -1,0 +1,3 @@
+<intrinsic_params><IntrinsicMatrix>[[485.48133669   0.         315.91164101]
+ [  0.         483.40864073 231.17192456]
+ [  0.           0.           1.        ]]</IntrinsicMatrix><DistortionCoefficients>[[-0.37341505  0.19204375  0.0022562   0.00197658 -0.04391282]]</DistortionCoefficients></intrinsic_params>
