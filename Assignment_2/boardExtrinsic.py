@@ -28,7 +28,6 @@ def read_intrinsics(path):
     mtx = mtx.replace('\n', '').replace('[', '').replace(']', '').split()
     mtx = np.array(list(map(float, mtx))).reshape(3, 3)
 
-    # 查找畸变系数元素
     dist = root_read.find('DistortionCoefficients').text
     dist = dist.replace('\n', '').replace('[', '').replace(']', '').split()
     dist = np.array(list(map(float, dist)))

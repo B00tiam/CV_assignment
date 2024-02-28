@@ -14,28 +14,38 @@ import xml.etree.ElementTree as ET
 # Function to load intrinsic parameters for a specific camera
 def load_intrinsics(camera_id):
     # Construct the path dynamically based on camera_id
-    path = f'CV_assignment/Assignment_2/data/cam{camera_id}/intrinsics.xml'
+    path = f'./data/cam{camera_id}/intrinsics.xml'
     tree = ET.parse(path)
     root = tree.getroot()
 
     # Assuming the XML structure is the same for all cameras and doesn't include the 'cam{camera_id}' part
-    camera_matrix = np.array([float(x) for x in root.find('CameraMatrix').text.split()]).reshape((3, 3))
-    dist_coeffs = np.array([float(x) for x in root.find('DistortionCoefficients').text.split()])
+    camera_matrix = root.find('IntrinsicMatrix').text
+    camera_matrix = camera_matrix.replace('\n', '').replace('[', '').replace(']', '').split()
+    camera_matrix = np.array(list(map(float, camera_matrix))).reshape(3, 3)
+
+    dist_coeffs = root.find('DistortionCoefficients').text
+    dist_coeffs = dist_coeffs.replace('\n', '').replace('[', '').replace(']', '').split()
+    dist_coeffs = np.array(list(map(float, dist_coeffs)))
 
     return camera_matrix, dist_coeffs
 
 # Function to load extrinsic parameters for a specific camera
 def load_extrinsics(camera_id):
     # Construct the path dynamically based on camera_id
-    path = f'CV_assignment/Assignment_2/data/cam{camera_id}/extrinsics.xml'
+    path = f'./data/cam{camera_id}/extrinsics.xml'
     tree = ET.parse(path)
     root = tree.getroot()
 
     # Assuming the XML structure is the same for all cameras and doesn't include the 'cam{camera_id}' part
-    rotation_vector = np.array([float(x) for x in root.find('RotationVector').text.split()])
-    translation_vector = np.array([float(x) for x in root.find('TranslationVector').text.split()])
+    rotation_matrix = root.find('RotationMatrix').text
+    rotation_matrix = rotation_matrix.replace('\n', '').replace('[', '').replace(']', '').split()
+    rotation_matrix = np.array(list(map(float, rotation_matrix))).reshape(3, 3)
 
-    return rotation_vector, translation_vector
+    translation_vector = root.find('TranslationVector').text
+    translation_vector = translation_vector.replace('\n', '').replace('[', '').replace(']', '').split()
+    translation_vector = np.array(list(map(float, translation_vector)))
+
+    return rotation_matrix, translation_vector
 
 # Generate grid positions (no change needed as per your request)
 def generate_grid(width, depth):
@@ -84,4 +94,6 @@ def voxel_reconstruction(width, height, depth):
     return voxels
 
 # Example usage
-voxels = voxel_reconstruction(100, 100, 100)
+# voxels = voxel_reconstruction(100, 100, 100)
+load_extrinsics(1)
+load_intrinsics(1)
