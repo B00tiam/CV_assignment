@@ -27,7 +27,7 @@ def load_intrinsics(camera_id):
 # Function to load extrinsic parameters for a specific camera
 def load_extrinsics(camera_id):
     # Construct the path dynamically based on camera_id
-    path = f'C:\\Users\\luiho\\PycharmProjects\\CV_assignment\\Assignment_2\\data\\cam{camera_id}\\extrinsics.xml'
+    path = f'CV_assignment/Assignment_2/data/cam{camera_id}/extrinsics.xml'
     tree = ET.parse(path)
     root = tree.getroot()
 
