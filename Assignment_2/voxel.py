@@ -123,7 +123,8 @@ def visualize_voxels(voxel_positions, colors=None):
 
 # Example usage with your set_voxel_positions function
 width, height, depth = 10, 10, 10  # Adjust these values based on your voxel grid size
-camera_matrices = [...]  # This should be a list of tuples: (camera_matrix, dist_coeffs, rvec, tvec) for each camera
+camera_matrices = [...]  # This should be a list of tuples: (camera_matrix, dist_coeffs, rvec, tvec) for each camera -
+#do you have any idea how to make it work?
 voxel_positions, colors = set_voxel_positions(width, height, depth, camera_dirs, camera_matrices)
 
 visualize_voxels(voxel_positions, colors)
