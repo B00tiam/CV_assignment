@@ -14,7 +14,7 @@ import xml.etree.ElementTree as ET
 # Function to load intrinsic parameters for a specific camera
 def load_intrinsics(camera_id):
     # Construct the path dynamically based on camera_id
-    path = f'C:\\Users\\luiho\\PycharmProjects\\CV_assignment\\Assignment_2\\data\\cam{camera_id}\\intrinsics.xml'
+    path = f'CV_assignment/Assignment_2/data/cam{camera_id}/intrinsics.xml'
     tree = ET.parse(path)
     root = tree.getroot()
 
