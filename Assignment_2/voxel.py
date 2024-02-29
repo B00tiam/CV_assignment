@@ -60,7 +60,6 @@ def generate_grid(width, depth):
             colors.append([1.0, 1.0, 1.0] if (x+z) % 2 == 0 else [0, 0, 0])
     return data, colors
 
-
 def is_voxel_in_foreground(voxel, camera_matrix, dist_coeffs, rotation_matrix, translation_vector, mask):
     # Project voxel to 2D point
     voxel_np = np.array([voxel], dtype=np.float32).reshape(-1, 1, 3)
@@ -69,24 +68,44 @@ def is_voxel_in_foreground(voxel, camera_matrix, dist_coeffs, rotation_matrix, t
 
     # Check if the projected point is within the mask's bounds and is part of the foreground
     if 0 <= x < mask.shape[1] and 0 <= y < mask.shape[0] and mask[y, x] > 0:
-        return True
-    return False
+        cv2.circle(mask, (x, y), 2, (125, 125, 125), -1)
+        if mask[y, x] == 255:
+            return True
+        else:
+            return False
 
-# Adjusted voxel generation to match specific needs
 def set_voxel_positions(width, height, depth):
-    data, colors = [], []
-    for cam_id in camera_ids:
-        camera_matrix, dist_coeffs = load_intrinsics(cam_id)
-        rotation_matrix, translation_vector = load_extrinsics(cam_id)
-        mask = load_mask(cam_id)  # Get the mask for the current camera
-        for x in range(0, width, int(block_size)):  # Adjust for loop to step by block_size
-            for y in range(0, height, int(block_size)):
-                for z in range(0, depth, int(block_size)):
+    lookup_table = {}
+
+    # Fill in the lookup table based on the foreground masks
+
+    for x in range(0, 60, int(block_size)):
+        for y in range(0, 60, int(block_size)):
+            for z in range(0, 60, int(block_size)):
+                for cam_id in camera_ids:
+                    camera_matrix, dist_coeffs = load_intrinsics(cam_id)
+                    rotation_matrix, translation_vector = load_extrinsics(cam_id)
+                    mask = load_mask(cam_id)  # Get the mask for the current camera
                     voxel = [x - width / 2, y, z - depth / 2]
-                    if is_voxel_in_foreground(voxel, camera_matrix, dist_coeffs, rotation_matrix, translation_vector,
-                                              mask):
-                        data.append(voxel)
-                        colors.append([x / width, y / height, z / depth])
+                    lookup_table[cam_id] = {}
+                    lookup_table[cam_id][f'{x}_{y}_{z}'] = {}
+                    lookup_table[cam_id][f'{x}_{y}_{z}']['visible'] = is_voxel_in_foreground(voxel, camera_matrix, dist_coeffs, rotation_matrix, translation_vector, mask)
+                    lookup_table[cam_id][f'{x}_{y}_{z}']['mask'] = mask
+
+    # print()
+    # cv2.imshow('',lookup_table[1][f'{0}_{0}_{0}']['mask'])
+    # cv2.waitKey(0)
+    data, colors = [], []
+    # Now only add voxels to data and colors if they are marked as foreground in the lookup table
+    # for cam_id in lookup_table:
+    #     voxel_visible = True
+    #     for voxel in lookup_table[voxel]:
+    #         if lookup_table[cam_id][voxel]['visible'] == False or lookup_table[]:
+    #             voxel_visible = False
+    #         break
+    #     if voxel_visible:
+    #         data.append(voxel)
+    #         colors.append([x / width, y / height, z / depth])
     return data, colors
 
 
