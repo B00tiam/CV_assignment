@@ -75,17 +75,20 @@ def get_cam_positions():
         R, T = load_extrinsics(i + 1)
         p = -np.dot(np.linalg.inv(R), T)
         d = R[:, 2]
-        print(p)
+        # print(p)
+        # switch the val of y & z
         temp = p[1]
         p[1] = p[2]
         p[2] = temp
         p[1] = -1 * p[1]
-        print(p)
+        # print(p)
         # print(d)
         cam_position.append((p / 50).tolist())
         # cam_direction.append(d.tolist())
 
-    return cam_position, [[1.0, 0, 0], [0, 1.0, 0], [0, 0, 1.0], [1.0, 1.0, 0]]
+    cam_color = [[1.0, 0, 0], [0, 1.0, 0], [0, 0, 1.0], [1.0, 1.0, 0]]
+
+    return cam_position, cam_color
     '''
     return [[-64 * block_size, 64 * block_size, 63 * block_size],
             [63 * block_size, 64 * block_size, 63 * block_size],
@@ -102,17 +105,28 @@ def get_cam_rotation_matrices():
     cam_angles = []
     cam_rotations = []
     for i in range(4):
+        d = []
         R, T = load_extrinsics(i + 1)
         rotations = np.eye(4)
         rotations[:3, :3] = R
         rotations[:3, 3] = T.flatten()
         cam_rotations.append(rotations.tolist())
 
-        angles = np.degrees(np.arctan2(R[2, 1], R[2, 2])), \
-            np.degrees(np.arcsin(-R[2, 0])), \
-            np.degrees(np.arctan2(R[1, 0], R[0, 0]))
-        # print(list(angles))
-        cam_angles.append(list(angles))
+        # get Rrot
+        r11, r12, r13 = R[0, 0], R[0, 1], R[0, 2]
+        r21, r22, r23 = R[1, 0], R[1, 1], R[1, 2]
+        r31, r32, r33 = R[2, 0], R[2, 1], R[2, 2]
+        theta_x = np.degrees(np.arctan2(r32, r33))
+        theta_y = np.degrees(np.arctan2(-r31, np.sqrt(r11 ** 2 + r21 ** 2)))
+        theta_z = np.degrees(np.arctan2(r21, r11))
+        theta_x = (theta_x + 180) % 360 - 180
+        theta_y = (theta_y + 180) % 360 - 180
+        theta_z = (theta_z + 180) % 360 - 180
+        d.append(theta_x)
+        d.append(theta_y)
+        d.append(theta_z)
+        cam_angles.append(d)
+
 
     # print(cam_rotations)
     for c in range(len(cam_rotations)):
