@@ -1,17 +1,21 @@
-import cv2
-import numpy as np
 import glm
 import random
+import cv2
+import numpy as np
 import xml.etree.ElementTree as ET
 
 block_size = 1.0
+camera_ids = [1, 2, 3, 4]
 
-# Load camera configurations from XML
-# Function to load intrinsic parameters from intrinsics.xml
-import numpy as np
-import xml.etree.ElementTree as ET
+def load_mask(camera_id):
+    # Adjust the path according to your project structure and file format
+    mask_path = f'C:/Users/luiho/PycharmProjects/CV_assignment/Assignment_2/data/cam{camera_id}/foreground_mask.jpg'
+    mask = cv2.imread(mask_path, cv2.IMREAD_GRAYSCALE)
+    if mask is None:
+        raise FileNotFoundError(f"Mask for camera {camera_id} not found at {mask_path}")
+    return mask
 
-# Function to load intrinsic parameters for a specific camera
+
 def load_intrinsics(camera_id):
     # Construct the path dynamically based on camera_id
     path = f'./data/cam{camera_id}/intrinsics.xml'
@@ -47,8 +51,9 @@ def load_extrinsics(camera_id):
 
     return rotation_matrix, translation_vector
 
-# Generate grid positions (no change needed as per your request)
 def generate_grid(width, depth):
+    # Generates the floor grid locations
+    # You don't need to edit this function
     data, colors = [], []
     for x in range(width):
         for z in range(depth):
@@ -56,46 +61,86 @@ def generate_grid(width, depth):
             colors.append([1.0, 1.0, 1.0] if (x+z) % 2 == 0 else [0, 0, 0])
     return data, colors
 
+
+def is_voxel_in_foreground(voxel, camera_matrix, dist_coeffs, rotation_matrix, translation_vector, mask):
+    # Project voxel to 2D point
+    voxel_np = np.array([voxel], dtype=np.float32).reshape(-1, 1, 3)
+    projected_point, _ = cv2.projectPoints(voxel_np, rotation_matrix, translation_vector, camera_matrix, dist_coeffs)
+    x, y = int(projected_point[0][0][0]), int(projected_point[0][0][1])
+
+    # Check if the projected point is within the mask's bounds and is part of the foreground
+    if 0 <= x < mask.shape[1] and 0 <= y < mask.shape[0] and mask[y, x] > 0:
+        return True
+    return False
+
 # Adjusted voxel generation to match specific needs
 def set_voxel_positions(width, height, depth):
     data, colors = [], []
-    # Adjust this logic as per your requirement or input video analysis
-    for x in range(width):
-        for y in range(height):
-            for z in range(depth):
-                # Example condition, adjust as necessary
-                if random.randint(0, 1000) < 5:
-                    data.append([x*block_size - width/2, y*block_size, z*block_size - depth/2])
-                    colors.append([x / width, y / height, z / depth])
+    for cam_id in camera_ids:
+        camera_matrix, dist_coeffs = load_intrinsics(cam_id)
+        rotation_matrix, translation_vector = load_extrinsics(cam_id)
+        mask = load_mask(cam_id)  # Get the mask for the current camera
+        for x in range(width):
+            for y in range(height):
+                for z in range(depth):
+                    voxel = [x * block_size - width / 2, y * block_size, z * block_size - depth / 2]
+                    if is_voxel_in_foreground(voxel, camera_matrix, dist_coeffs, rotation_matrix, translation_vector,
+                                              mask):
+                        data.append(voxel)
+                        colors.append([x / width, y / height, z / depth])
     return data, colors
 
 
-# Function to project voxels onto camera views and filter based on FoV
-def project_and_filter_voxels(voxels, camera_id):
-    camera_matrix, dist_coeffs = load_intrinsics(camera_id)
-    rotation_vector, translation_vector = load_extrinsics(camera_id)
-    filtered_voxels = []
-    for voxel in voxels:
-        voxel_np = np.array([voxel], dtype = np.float32).reshape(-1, 1, 3)
-        projected_point, _ = cv2.projectPoints(voxel_np, rotation_vector, translation_vector, camera_matrix, dist_coeffs)
-        # Example filter condition, you'll need to adjust this based on actual camera image dimensions and FoV
-        if 0 <= projected_point[0][0][0] < camera_image_width and 0 <= projected_point[0][0][1] < camera_image_height:
-            filtered_voxels.append(voxel)
-    return filtered_voxels
+def get_cam_positions():
+    # Generates dummy camera locations at the 4 corners of the room
+    # TODO: You need to input the estimated locations of the 4 cameras in the world coordinates.
+    cam_position = []
+    cam_direction = []
+    for i in range(4):
+        R, T = load_extrinsics(i + 1)
+        p = -np.dot(np.linalg.inv(R), T)
+        d = R[:, 2]
+        print(d)
+        cam_position.append(p.tolist())
+        cam_direction.append(d.tolist())
 
-# Main function to orchestrate voxel reconstruction
-def voxel_reconstruction(width, height, depth):
-    voxels = set_voxel_positions(width, height, depth)[0]
-    # Assuming you have 4 cameras based on the original code
-    for camera_id in range(1, 5):
-        voxels = project_and_filter_voxels(voxels, camera_id)
-    # Implement further processing, such as noise reduction and hole filling here
-    return voxels
+    return cam_position, cam_direction
+    '''
+    return [[-64 * block_size, 64 * block_size, 63 * block_size],
+            [63 * block_size, 64 * block_size, 63 * block_size],
+            [63 * block_size, 64 * block_size, -64 * block_size],
+            [-64 * block_size, 64 * block_size, -64 * block_size]], \
+        [[1.0, 0, 0], [0, 1.0, 0], [0, 0, 1.0], [1.0, 1.0, 0]]
+    '''
 
-# Example usage
-# voxels = voxel_reconstruction(100, 100, 100)
-load_extrinsics(1)
-load_intrinsics(1)
+def get_cam_rotation_matrices():
+    # Generates dummy camera rotation matrices, looking down 45 degrees towards the center of the room
+    # TODO: You need to input the estimated camera rotation matrices (4x4) of the 4 cameras in the world coordinates.
+    # cam_angles = [[0, 45, -45], [0, 135, -45], [0, 225, -45], [0, 315, -45]]
+    # New code
+    cam_angles = []
+    cam_rotations = []
+    for i in range(4):
+        R, T = load_extrinsics(i + 1)
+        rotations = np.eye(4)
+        rotations[:3, :3] = R
+        rotations[:3, 3] = T.flatten()
+        cam_rotations.append(rotations.tolist())
 
-camera_image_width = 1920
-camera_image_height = 1080
+        angles = np.degrees(np.arctan2(R[2, 1], R[2, 2])), \
+            np.degrees(np.arcsin(-R[2, 0])), \
+            np.degrees(np.arctan2(R[1, 0], R[0, 0]))
+        # print(list(angles))
+        cam_angles.append(list(angles))
+
+    print(cam_rotations)
+    for c in range(len(cam_rotations)):
+        cam_rotations[c] = glm.rotate(cam_rotations[c], cam_angles[c][0] * np.pi / 180, [1, 0, 0])
+        cam_rotations[c] = glm.rotate(cam_rotations[c], cam_angles[c][1] * np.pi / 180, [0, 1, 0])
+        cam_rotations[c] = glm.rotate(cam_rotations[c], cam_angles[c][2] * np.pi / 180, [0, 0, 1])
+    print(cam_rotations)
+    return cam_rotations
+
+# test
+# get_cam_positions()
+get_cam_rotation_matrices()
