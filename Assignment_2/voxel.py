@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 import xml.etree.ElementTree as ET
 
-block_size = 1.0
+block_size = 2.0
 camera_ids = [1, 2, 3, 4]
 
 def load_mask(camera_id):
@@ -14,7 +14,6 @@ def load_mask(camera_id):
     if mask is None:
         raise FileNotFoundError(f"Mask for camera {camera_id} not found at {mask_path}")
     return mask
-
 
 def load_intrinsics(camera_id):
     # Construct the path dynamically based on camera_id
@@ -80,10 +79,10 @@ def set_voxel_positions(width, height, depth):
         camera_matrix, dist_coeffs = load_intrinsics(cam_id)
         rotation_matrix, translation_vector = load_extrinsics(cam_id)
         mask = load_mask(cam_id)  # Get the mask for the current camera
-        for x in range(width):
-            for y in range(height):
-                for z in range(depth):
-                    voxel = [x * block_size - width / 2, y * block_size, z * block_size - depth / 2]
+        for x in range(0, width, int(block_size)):  # Adjust for loop to step by block_size
+            for y in range(0, height, int(block_size)):
+                for z in range(0, depth, int(block_size)):
+                    voxel = [x - width / 2, y, z - depth / 2]
                     if is_voxel_in_foreground(voxel, camera_matrix, dist_coeffs, rotation_matrix, translation_vector,
                                               mask):
                         data.append(voxel)
