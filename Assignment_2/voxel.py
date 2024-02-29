@@ -69,8 +69,7 @@ def set_voxel_positions(width, height, depth):
                     colors.append([x / width, y / height, z / depth])
     return data, colors
 
-camera_image_width = 1920
-camera_image_height = 1080
+
 # Function to project voxels onto camera views and filter based on FoV
 def project_and_filter_voxels(voxels, camera_id):
     camera_matrix, dist_coeffs = load_intrinsics(camera_id)
@@ -97,3 +96,6 @@ def voxel_reconstruction(width, height, depth):
 # voxels = voxel_reconstruction(100, 100, 100)
 load_extrinsics(1)
 load_intrinsics(1)
+
+camera_image_width = 1920
+camera_image_height = 1080

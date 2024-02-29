@@ -6,9 +6,10 @@ from engine.buffer.texture import *
 from engine.buffer.hdrbuffer import HDRBuffer
 from engine.buffer.blurbuffer import BlurBuffer
 from engine.effect.bloom import Bloom
-from assignment import set_voxel_positions, generate_grid, get_cam_positions, get_cam_rotation_matrices
 from engine.camera import Camera
 from engine.config import config
+
+from assignment import set_voxel_positions, generate_grid, get_cam_positions, get_cam_rotation_matrices
 
 cube, hdrbuffer, blurbuffer, lastPosX, lastPosY = None, None, None, None, None
 firstTime = True
@@ -151,7 +152,9 @@ def main():
         glViewport(0, 0, window_width_px, window_height_px)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
+        # grid
         draw_objs(square, program, perspective, light_pos, texture_grid, normal_grid, specular_grid, depth_grid)
+        # center point
         draw_objs(cube, program, perspective, light_pos, texture, normal, specular, depth)
         for cam in cam_shapes:
             draw_objs(cam, program, perspective, light_pos, texture_grid, normal_grid, specular_grid, depth_grid)
