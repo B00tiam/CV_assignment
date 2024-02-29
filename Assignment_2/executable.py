@@ -9,7 +9,7 @@ from engine.effect.bloom import Bloom
 from engine.camera import Camera
 from engine.config import config
 
-from assignment import set_voxel_positions, generate_grid, get_cam_positions, get_cam_rotation_matrices
+from assignment2 import set_voxel_positions, generate_grid, get_cam_positions, get_cam_rotation_matrices
 
 cube, hdrbuffer, blurbuffer, lastPosX, lastPosY = None, None, None, None, None
 firstTime = True
@@ -144,6 +144,7 @@ def main():
         square.draw_multiple(depth_program)
         cube.draw_multiple(depth_program)
         for cam in cam_shapes:
+            # print(len(cam_shapes))
             cam.draw_multiple(depth_program)
 
         hdrbuffer.bind()

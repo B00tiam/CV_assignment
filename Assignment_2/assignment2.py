@@ -48,6 +48,8 @@ def generate_grid(width, depth):
         for z in range(depth):
             data.append([x*block_size - width/2, -block_size, z*block_size - depth/2])
             colors.append([1.0, 1.0, 1.0] if (x+z) % 2 == 0 else [0, 0, 0])
+    # print(data)
+    # print(colors)
     return data, colors
 
 
@@ -73,11 +75,17 @@ def get_cam_positions():
         R, T = load_extrinsics(i + 1)
         p = -np.dot(np.linalg.inv(R), T)
         d = R[:, 2]
-        print(d)
-        cam_position.append(p.tolist())
-        cam_direction.append(d.tolist())
+        print(p)
+        temp = p[1]
+        p[1] = p[2]
+        p[2] = temp
+        p[1] = -1 * p[1]
+        print(p)
+        # print(d)
+        cam_position.append((p / 50).tolist())
+        # cam_direction.append(d.tolist())
 
-    return cam_position, cam_direction
+    return cam_position, [[1.0, 0, 0], [0, 1.0, 0], [0, 0, 1.0], [1.0, 1.0, 0]]
     '''
     return [[-64 * block_size, 64 * block_size, 63 * block_size],
             [63 * block_size, 64 * block_size, 63 * block_size],
@@ -106,14 +114,14 @@ def get_cam_rotation_matrices():
         # print(list(angles))
         cam_angles.append(list(angles))
 
-    print(cam_rotations)
+    # print(cam_rotations)
     for c in range(len(cam_rotations)):
         cam_rotations[c] = glm.rotate(cam_rotations[c], cam_angles[c][0] * np.pi / 180, [1, 0, 0])
         cam_rotations[c] = glm.rotate(cam_rotations[c], cam_angles[c][1] * np.pi / 180, [0, 1, 0])
         cam_rotations[c] = glm.rotate(cam_rotations[c], cam_angles[c][2] * np.pi / 180, [0, 0, 1])
-    print(cam_rotations)
+    #print(cam_rotations)
     return cam_rotations
 
 # test
-# get_cam_positions()
+get_cam_positions()
 get_cam_rotation_matrices()
