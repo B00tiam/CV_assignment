@@ -2,6 +2,7 @@ import glm
 import random
 import numpy as np
 import xml.etree.ElementTree as ET
+import cv2
 
 block_size = 1.0
 
@@ -40,6 +41,30 @@ def load_extrinsics(camera_id):
 
     return rotation_matrix, translation_vector
 
+def get_cam_params():
+    # get the projection_matrix
+    projection_matrix = []
+    for i in range(4):
+        mtx, dist = load_intrinsics(i + 1)
+        R, T = load_extrinsics(i + 1)
+        projection_matrix.append([mtx, dist, R, T])
+
+    return projection_matrix
+
+def get_pics():
+    # get the mask and average pics
+    cam_images = []
+    voxel_masks = []
+
+    for i in range(4):
+        path1 = f'./data/cam{i + 1}/average_image.jpg'
+        path2 = f'./data/cam{i + 1}/foreground_mask.jpg'
+        cam_image = cv2.imread(path1)
+        voxel_mask = cv2.imread(path2)
+        cam_images.append(cam_image)
+        voxel_masks.append(voxel_mask)
+    return cam_images, voxel_masks
+
 def generate_grid(width, depth):
     # Generates the floor grid locations
     # You don't need to edit this function
@@ -52,15 +77,56 @@ def generate_grid(width, depth):
     # print(colors)
     return data, colors
 
+def is_point_within_image(x, y, image_shape):
+    height, width = image_shape[:2]
+    # print(height); print(width)
+    if x >= 0 and x < width and y >= 0 and y < height:
+        print("true")
+        return True
+    else:
+        return False
+
+def is_voxel_colored(x, y, z, cam_images, voxel_masks, projection_matrix):
+
+    for index in range(4):
+        mtx, dist, R, T = projection_matrix[index]
+        # print(mtx); print(dist); print(R); print(T)
+        # Project voxel coordinates to image plane
+        coords = np.array([[x, y, z, 1]], dtype=np.float32)
+        # undistorted_coords = cv2.undistortPoints(coords, mtx, dist)
+        rotation_translation_mtx = np.vstack((R, T))
+        rotation_translation_mtx_T = rotation_translation_mtx.T
+        projected_coords = np.dot(coords, rotation_translation_mtx_T.T)
+        # print(projected_coords)
+        # projected_coords = projected_coords[:, :2] / projected_coords[:, 2:]
+        # print(projected_coords)
+        u = projected_coords[0][0]
+        v = projected_coords[0][1]
+        # print(u); print(v)
+        image_shape = cam_images[index].shape[:2]
+        # print(image_shape[0])
+        # print(image_shape[1])
+        if is_point_within_image(u, v, image_shape):
+            # Perform voxel coloring or any other desired operations
+            print(voxel_masks[index])
+            if np.any(voxel_masks[index][int(u), int(v)]):
+                # Voxel is colored or contains desired feature
+                return True
+
+    return False
 
 def set_voxel_positions(width, height, depth):
     # Generates random voxel locations
     # TODO: You need to calculate proper voxel arrays instead of random ones.
+    cam_images, voxel_masks = get_pics()
+    projection_matrix = get_cam_params()
+    print(width); print(height); print(depth)
     data, colors = [], []
     for x in range(width):
         for y in range(height):
             for z in range(depth):
-                if random.randint(0, 1000) < 5:
+                if is_voxel_colored(x, y, z, cam_images, voxel_masks, projection_matrix) is True:
+                    print("good")
                     data.append([x*block_size - width/2, y*block_size, z*block_size - depth/2])
                     colors.append([x / width, z / depth, y / height])
     return data, colors
@@ -137,5 +203,10 @@ def get_cam_rotation_matrices():
     return cam_rotations
 
 # test
-get_cam_positions()
-get_cam_rotation_matrices()
+# get_cam_positions()
+# get_cam_rotation_matrices()
+# get_cam_params()
+# get_pics()
+# cam_images, voxel_masks = get_pics()
+# projection_matrix = get_cam_params()
+# print(is_voxel_colored(110, 31, 40, cam_images, voxel_masks, projection_matrix))
