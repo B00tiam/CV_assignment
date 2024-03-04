@@ -5,7 +5,7 @@ import cv2 as cv
 
 # global variables
 block_size = 1.0
-voxel_size = 30.0   # voxel every 3cm
+voxel_size = 40.0   # voxel every 3cm
 lookup_table = []
 camera_handles = []
 background_models = []
