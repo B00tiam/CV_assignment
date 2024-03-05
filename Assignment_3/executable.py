@@ -6,9 +6,12 @@ from engine.buffer.texture import *
 from engine.buffer.hdrbuffer import HDRBuffer
 from engine.buffer.blurbuffer import BlurBuffer
 from engine.effect.bloom import Bloom
-from assignment import set_voxel_positions, generate_grid, get_cam_positions, get_cam_rotation_matrices
 from engine.camera import Camera
 from engine.config import config
+
+# used for assignments:
+from assignment import set_voxel_positions, generate_grid, get_cam_positions, get_cam_rotation_matrices
+from cluster import set_voxel_colors
 
 cube, hdrbuffer, blurbuffer, lastPosX, lastPosY = None, None, None, None, None
 firstTime = True
@@ -186,6 +189,8 @@ def key_callback(window, key, scancode, action, mods):
     if key == glfw.KEY_G and action == glfw.PRESS:
         global cube, curr_time
         positions, colors = set_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time)
+        # coloring func
+        colors = set_voxel_colors(positions, colors)
         curr_time += 1
         cube.set_multiple_positions(positions, colors)
 
