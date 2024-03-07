@@ -14,7 +14,13 @@ def set_voxel_colors(positions, colors):
     # get labels
     _, labels, centers = cv.kmeans(data, k, None, criteria, 10, cv.KMEANS_RANDOM_CENTERS)
     labels = labels.flatten()
+    # define the color map
+    color_map = {0: [255, 0, 0],  # red
+                 1: [0, 255, 0],  # green
+                 2: [0, 0, 255],  # blue
+                 3: [255, 255, 0]}  # yellow
+
     for i, label in enumerate(labels):
-        colors[i] = [label, label, label]
+        colors[i] = color_map[label]
 
     return colors

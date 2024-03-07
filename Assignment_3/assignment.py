@@ -120,6 +120,14 @@ def background_subtraction(image, background_model):
     dilation_elt = cv.getStructuringElement(cv.MORPH_ELLIPSE, (3, 3))
     foreground_image = cv.dilate(foreground_image, dilation_elt)
     foreground_image = cv.erode(foreground_image, erosion_elt)
+
+
+    # foreground filter
+    contours, _ = cv.findContours(foreground_image, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+    for contour in contours:
+        area = cv.contourArea(contour)
+        if area < 100:  # adjustable
+            cv.drawContours(foreground_image, [contour], 0, 0, -1)
             
     return foreground_image
 
