@@ -5,7 +5,7 @@ import cv2 as cv
 
 # global variables
 block_size = 1.0
-voxel_size = 40.0   # voxel every 4cm
+voxel_size = 30.0   # voxel every 3cm
 lookup_table = []
 camera_handles = []
 background_models = []
@@ -71,10 +71,14 @@ def set_voxel_positions(width, height, depth, curr_time):
                         continue
                     voxel_index = z + y * depth + x * (depth * height)
 
+                    if np.isinf(lookup_table[i_camera][voxel_index][0][0]) or np.isinf(lookup_table[i_camera][voxel_index][0][1]):
+                        voxel_grid[x, z, y] = 0.0
+                        continue
                     projection_x = int(lookup_table[i_camera][voxel_index][0][0])
                     projection_y = int(lookup_table[i_camera][voxel_index][0][1])
                     if projection_x < 0 or projection_y < 0 or projection_x >= foreground_image.shape[1] or projection_y >= foreground_image.shape[0] or not foreground_image[projection_y, projection_x]:
                         voxel_grid[x, z, y] = 0.0
+
     colors = []
     # put voxels that are on in list
     for x in range(width):
