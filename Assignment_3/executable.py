@@ -184,21 +184,22 @@ def resize_callback(window, w, h):
 
 
 def key_callback(window, key, scancode, action, mods):
+    global cube, curr_time
     if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
         glfw.set_window_should_close(window, glfw.TRUE)
     if key == glfw.KEY_G and action == glfw.PRESS:
-        global cube, curr_time
-        positions, colors = set_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time)
+
+        positions, colors, _ = set_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time)
         # coloring func
         colors = set_voxel_colors(positions, colors)
         curr_time += 1
         cube.set_multiple_positions(positions, colors)
-    # GMM test:
-    if key == glfw.KEY_C and action == glfw.PRESS:
-        global curr_time
-        positions, colors = set_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time)
-        # coloring func
-        colors = set_voxel_colors(positions, colors)
+
+    # projection test:
+    if key == glfw.KEY_P and action == glfw.PRESS:
+        _, colors, projects = set_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time)
+        # projection func
+        cluster_project(projects, colors)
         curr_time += 1
 
 

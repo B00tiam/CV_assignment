@@ -26,8 +26,9 @@ def set_voxel_positions(width, height, depth, curr_time):
     if len(lookup_table) == 0:
         create_lookup_table(width, height, depth)
 
-    # initialize voxel list
+    # initialize voxel list and projection list
     voxel_list = []
+    projection_list = []
     
     # swap y and z
     voxel_grid = np.ones((width, depth, height), np.float32)
@@ -63,6 +64,9 @@ def set_voxel_positions(width, height, depth, curr_time):
         # determine foreground
         foreground_image = background_subtraction(image, background_models[i_camera])
 
+        # projected points set for each cam
+        projections = []
+
         # set voxel to off if it is not visible in the camera, or is not in the foreground
         for x in range(width):
             for y in range(height):
@@ -78,6 +82,12 @@ def set_voxel_positions(width, height, depth, curr_time):
                     projection_y = int(lookup_table[i_camera][voxel_index][0][1])
                     if projection_x < 0 or projection_y < 0 or projection_x >= foreground_image.shape[1] or projection_y >= foreground_image.shape[0] or not foreground_image[projection_y, projection_x]:
                         voxel_grid[x, z, y] = 0.0
+                        continue
+                    # get projected points
+                    projections.append([projection_x, projection_y])
+
+        # add cam's projected points
+        projection_list.append(projections)
 
     colors = []
     # put voxels that are on in list
@@ -87,7 +97,7 @@ def set_voxel_positions(width, height, depth, curr_time):
                 if voxel_grid[x, z, y] > 0:
                     voxel_list.append([x * block_size - width / 2, y * block_size, z * block_size - depth / 2])
                     colors.append([x / width, z / depth, y / height])
-    return voxel_list, colors
+    return voxel_list, colors, projection_list
 
 
 # create lookup table

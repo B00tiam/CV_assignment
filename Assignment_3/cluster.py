@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
 
-
+from assignment import *
 
 def set_voxel_colors(positions, colors):
 
@@ -30,12 +30,12 @@ def set_voxel_colors(positions, colors):
 
     return colors
 
-def cluster_project(labeled_data):
+def cluster_project(projects, colors):
 
     cam_path = './data/cam2/video.avi'
     # take the 1st frame (frame1) of cam2:
     # get the video
-    video_capture = cv2.VideoCapture(cam_path)
+    video_capture = cv.VideoCapture(cam_path)
     if not video_capture.isOpened():
         print("Cannot open file")
         exit()
@@ -44,4 +44,12 @@ def cluster_project(labeled_data):
         print("Cannot get frame")
         exit()
 
+    project = projects[1]
 
+    for p in project:
+        x, y = p
+        cv.circle(frame1, (x, y), 1, (0, 0, 255), -1)
+
+    cv.imshow('Projected Image', frame1)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
