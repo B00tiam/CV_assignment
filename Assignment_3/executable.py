@@ -11,7 +11,7 @@ from engine.config import config
 
 # used for assignments:
 from assignment import set_voxel_positions, generate_grid, get_cam_positions, get_cam_rotation_matrices
-from cluster import set_voxel_colors
+from cluster import set_voxel_colors, cluster_project
 
 cube, hdrbuffer, blurbuffer, lastPosX, lastPosY = None, None, None, None, None
 firstTime = True
@@ -193,6 +193,13 @@ def key_callback(window, key, scancode, action, mods):
         colors = set_voxel_colors(positions, colors)
         curr_time += 1
         cube.set_multiple_positions(positions, colors)
+    # GMM test:
+    if key == glfw.KEY_C and action == glfw.PRESS:
+        global curr_time
+        positions, colors = set_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time)
+        # coloring func
+        colors = set_voxel_colors(positions, colors)
+        curr_time += 1
 
 
 def mouse_move(win, pos_x, pos_y):

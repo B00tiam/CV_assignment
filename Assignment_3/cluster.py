@@ -1,7 +1,6 @@
 import cv2 as cv
 import numpy as np
 
-from assignment import set_voxel_positions
 
 
 def set_voxel_colors(positions, colors):
@@ -17,7 +16,9 @@ def set_voxel_colors(positions, colors):
     # get labels, centers(4-elements)
     _, labels, centers = cv.kmeans(data_np, k, None, criteria, 10, cv.KMEANS_PP_CENTERS)
     labels = labels.flatten()
-    print(labels)
+    # print(labels)
+    # get labeled voxel data
+    
     # define the color map
     color_map = {0: [255, 0, 0],  # red
                  1: [0, 255, 0],  # green
@@ -28,3 +29,19 @@ def set_voxel_colors(positions, colors):
         colors[i] = color_map[label]
 
     return colors
+
+def cluster_project(labeled_data):
+
+    cam_path = './data/cam2/video.avi'
+    # take the 1st frame (frame1) of cam2:
+    # get the video
+    video_capture = cv2.VideoCapture(cam_path)
+    if not video_capture.isOpened():
+        print("Cannot open file")
+        exit()
+    ret, frame1 = video_capture.read()
+    if not ret:
+        print("Cannot get frame")
+        exit()
+
+
