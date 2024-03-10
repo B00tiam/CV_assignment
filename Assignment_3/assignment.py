@@ -20,15 +20,28 @@ def generate_grid(width, depth):
             colors.append([1.0, 1.0, 1.0] if (x + z) % 2 == 0 else [0, 0, 0])
     return data, colors
 
+def put_voxel(width, height, depth, voxel_grid):
+    voxel_list = []
+    colors = []
+    # put voxels that are on in list
+    for x in range(width):
+        for y in range(height):
+            for z in range(depth):
+                if voxel_grid[x, z, y] > 0:
+                    voxel_list.append([x * block_size - width / 2, y * block_size, z * block_size - depth / 2])
+                    colors.append([x / width, z / depth, y / height])
+
+    return voxel_list, colors
 
 # determines which voxels should be set
 def set_voxel_positions(width, height, depth, curr_time):
     if len(lookup_table) == 0:
         create_lookup_table(width, height, depth)
 
-    # initialize voxel list and projection list
+    # initialize voxel list and projection list and color list
     voxel_list = []
     projection_list = []
+    color_list = []
     
     # swap y and z
     voxel_grid = np.ones((width, depth, height), np.float32)
@@ -89,15 +102,12 @@ def set_voxel_positions(width, height, depth, curr_time):
         # add cam's projected points
         projection_list.append(projections)
 
-    colors = []
-    # put voxels that are on in list
-    for x in range(width):
-        for y in range(height):
-            for z in range(depth):
-                if voxel_grid[x, z, y] > 0:
-                    voxel_list.append([x * block_size - width / 2, y * block_size, z * block_size - depth / 2])
-                    colors.append([x / width, z / depth, y / height])
-    return voxel_list, colors, projection_list
+        # put voxels that are on in list
+        voxels, colors = put_voxel(width, height, depth, voxel_grid)
+        voxel_list.append(voxels)
+        color_list.append(colors)
+
+    return voxel_list, color_list, projection_list
 
 
 # create lookup table

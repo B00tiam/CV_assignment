@@ -191,15 +191,18 @@ def key_callback(window, key, scancode, action, mods):
 
         positions, colors, _ = set_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time)
         # coloring func
-        colors = set_voxel_colors(positions, colors)
+        # index = 3 is the right voxel set
+        new_colors = set_voxel_colors(positions[3], colors[3])
         curr_time += 1
-        cube.set_multiple_positions(positions, colors)
+        cube.set_multiple_positions(positions[3], new_colors)
 
     # projection test:
     if key == glfw.KEY_P and action == glfw.PRESS:
-        _, colors, projects = set_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time)
-        # projection func
-        cluster_project(projects, colors)
+        positions, colors, projects = set_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time)
+        # projection func in loop
+        for i in range(4):
+            new_colors = set_voxel_colors(positions[i], colors[i])
+            cluster_project(projects[i], new_colors, i)
         curr_time += 1
 
 

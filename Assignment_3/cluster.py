@@ -30,10 +30,11 @@ def set_voxel_colors(positions, colors):
 
     return colors
 
-def cluster_project(projects, colors):
+def cluster_project(projects, colors, index):
 
-    cam_path = './data/cam2/video.avi'
-    # take the 1st frame (frame1) of cam2:
+
+    cam_path = './data/cam' + str(index + 1) + '/video.avi'
+    # take the 1st frame (frame1) of each cam:
     # get the video
     video_capture = cv.VideoCapture(cam_path)
     if not video_capture.isOpened():
@@ -44,11 +45,9 @@ def cluster_project(projects, colors):
         print("Cannot get frame")
         exit()
 
-    project = projects[1]
-
-    for p in project:
-        x, y = p
-        cv.circle(frame1, (x, y), 1, (0, 0, 255), -1)
+    for i in range(len(projects)):
+        x, y = projects[i]
+        cv.circle(frame1, (x, y), 1, colors[i], -1)
 
     cv.imshow('Projected Image', frame1)
     cv.waitKey(0)
