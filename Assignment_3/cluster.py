@@ -15,6 +15,7 @@ def set_voxel_colors(positions, colors):
     criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 20, 1.0)
     # get labels, centers(4-elements)
     _, labels, centers = cv.kmeans(data_np, k, None, criteria, 10, cv.KMEANS_PP_CENTERS)
+    # print(centers)
     labels = labels.flatten()
     # print(labels)
     # get labeled voxel data
@@ -28,12 +29,13 @@ def set_voxel_colors(positions, colors):
     for i, label in enumerate(labels):
         colors[i] = color_map[label]
 
-    return colors
+    return colors, centers
 
 def cluster_project(projects, colors, index):
 
-
     cam_path = './data/cam' + str(index + 1) + '/video.avi'
+    pic_path1 = './data/cam' + str(index + 1) + '/project_img.jpg'
+    pic_path2 = './data/cam' + str(index + 1) + '/origin_img.jpg'
     # take the 1st frame (frame1) of each cam:
     # get the video
     video_capture = cv.VideoCapture(cam_path)
@@ -45,11 +47,14 @@ def cluster_project(projects, colors, index):
         print("Cannot get frame")
         exit()
 
+    # store the origin img
+    cv.imwrite(pic_path2, frame1)
+
     for i in range(len(projects)):
         x, y = projects[i]
         cv.circle(frame1, (x, y), 1, colors[i], -1)
 
     cv.imshow('Projected Image', frame1)
-    cv.imwrite('project_img.jpg', frame1)
+    cv.imwrite(pic_path1, frame1)
     cv.waitKey(0)
     cv.destroyAllWindows()

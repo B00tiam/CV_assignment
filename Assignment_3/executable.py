@@ -185,14 +185,18 @@ def resize_callback(window, w, h):
 
 def key_callback(window, key, scancode, action, mods):
     global cube, curr_time
+
+    # quit the window
     if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
         glfw.set_window_should_close(window, glfw.TRUE)
+
+    # clustering
     if key == glfw.KEY_G and action == glfw.PRESS:
 
         positions, colors, _ = set_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time)
         # coloring func
         # index = 3 is the right voxel set
-        new_colors = set_voxel_colors(positions[3], colors[3])
+        new_colors, _ = set_voxel_colors(positions[3], colors[3])
         curr_time += 1
         cube.set_multiple_positions(positions[3], new_colors)
 
@@ -201,7 +205,7 @@ def key_callback(window, key, scancode, action, mods):
         positions, colors, projects = set_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time)
         # projection func in loop
         for i in range(4):
-            new_colors = set_voxel_colors(positions[i], colors[i])
+            new_colors, _ = set_voxel_colors(positions[i], colors[i])
             cluster_project(projects[i], new_colors, i)
         curr_time += 1
 
@@ -214,7 +218,7 @@ def key_callback(window, key, scancode, action, mods):
         positions, colors = set_multi_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time, frame_cnt=curr_time * 24)
         # coloring func
         # index = 3 is the right voxel set
-        new_colors = set_voxel_colors(positions, colors)
+        new_colors, _ = set_voxel_colors(positions, colors)
         cube.set_multiple_positions(positions, new_colors)
         curr_time += 1
 
