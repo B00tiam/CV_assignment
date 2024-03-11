@@ -50,5 +50,6 @@ def cluster_project(projects, colors, index):
         cv.circle(frame1, (x, y), 1, colors[i], -1)
 
     cv.imshow('Projected Image', frame1)
+    cv.imwrite('project_img.jpg', frame1)
     cv.waitKey(0)
     cv.destroyAllWindows()
