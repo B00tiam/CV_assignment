@@ -33,6 +33,67 @@ def put_voxel(width, height, depth, voxel_grid):
 
     return voxel_list, colors
 
+def set_multi_voxel_positions(width, height, depth, curr_time, frame_cnt):
+    if len(lookup_table) == 0:
+        create_lookup_table(width, height, depth)
+
+    # swap y and z
+    voxel_grid = np.ones((width, depth, height), np.float32)
+
+    for i_camera in range(4):
+        path_name = './data/cam' + str(i_camera + 1)
+
+        if curr_time == 0:
+            # train MOG2 on background video, remove shadows, default learning rate
+            background_models.append(cv.createBackgroundSubtractorMOG2())
+            background_models[i_camera].setShadowValue(0)
+
+            # open background.avi
+            camera_handle = cv.VideoCapture(path_name + '/background.avi')
+            num_frames = int(camera_handle.get(cv.CAP_PROP_FRAME_COUNT))
+
+            # train background model on each frame
+            for i_frame in range(num_frames):
+                ret, image = camera_handle.read()
+                if ret:
+                    background_models[i_camera].apply(image)
+
+            # close background.avi
+            camera_handle.release()
+
+            # open video.avi
+            camera_handles.append(cv.VideoCapture(path_name + '/video.avi'))
+            num_frames = int(camera_handles[i_camera].get(cv.CAP_PROP_FRAME_COUNT))
+
+        # read frame
+        camera_handles[i_camera].set(cv.CAP_PROP_POS_FRAMES, frame_cnt)
+        ret, image = camera_handles[i_camera].read()
+
+        # determine foreground
+        foreground_image = background_subtraction(image, background_models[i_camera])
+
+        # set voxel to off if it is not visible in the camera, or is not in the foreground
+        for x in range(width):
+            for y in range(height):
+                for z in range(depth):
+                    if not voxel_grid[x, z, y]:
+                        continue
+                    voxel_index = z + y * depth + x * (depth * height)
+
+                    if np.isinf(lookup_table[i_camera][voxel_index][0][0]) or np.isinf(lookup_table[i_camera][voxel_index][0][1]):
+                        voxel_grid[x, z, y] = 0.0
+                        continue
+                    projection_x = int(lookup_table[i_camera][voxel_index][0][0])
+                    projection_y = int(lookup_table[i_camera][voxel_index][0][1])
+                    if projection_x < 0 or projection_y < 0 or projection_x >= foreground_image.shape[1] or projection_y >= foreground_image.shape[0] or not foreground_image[projection_y, projection_x]:
+                        voxel_grid[x, z, y] = 0.0
+                        continue
+
+    # put voxels that are on in list
+    voxel_list, color_list = put_voxel(width, height, depth, voxel_grid)
+
+    return voxel_list, color_list
+
 # determines which voxels should be set
 def set_voxel_positions(width, height, depth, curr_time):
     if len(lookup_table) == 0:

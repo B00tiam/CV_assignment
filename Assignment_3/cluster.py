@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
 
-from assignment import *
+# from assignment import *
 
 def set_voxel_colors(positions, colors):
 

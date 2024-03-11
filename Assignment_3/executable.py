@@ -10,7 +10,7 @@ from engine.camera import Camera
 from engine.config import config
 
 # used for assignments:
-from assignment import set_voxel_positions, generate_grid, get_cam_positions, get_cam_rotation_matrices
+from assignment import set_voxel_positions, set_multi_voxel_positions, generate_grid, get_cam_positions, get_cam_rotation_matrices
 from cluster import set_voxel_colors, cluster_project
 
 cube, hdrbuffer, blurbuffer, lastPosX, lastPosY = None, None, None, None, None
@@ -203,6 +203,19 @@ def key_callback(window, key, scancode, action, mods):
         for i in range(4):
             new_colors = set_voxel_colors(positions[i], colors[i])
             cluster_project(projects[i], new_colors, i)
+        curr_time += 1
+
+    # color model (GMM):
+    # if key == glfw.KEY_C and action == glfw.PRESS:
+
+    # movement simulation:
+    if key == glfw.KEY_T and action == glfw.PRESS:
+        # 648 frames
+        positions, colors = set_multi_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time, frame_cnt=curr_time * 24)
+        # coloring func
+        # index = 3 is the right voxel set
+        new_colors = set_voxel_colors(positions, colors)
+        cube.set_multiple_positions(positions, new_colors)
         curr_time += 1
 
 
