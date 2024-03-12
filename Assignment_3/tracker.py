@@ -1,42 +1,67 @@
-import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
+from assignment import set_voxel_positions, set_multi_voxel_positions
 from cluster import set_voxel_colors
-from assignment import set_multi_voxel_positions
+import json
+import numpy as np
 
-num_clusters = 4
-cluster_trajectories = {i: [] for i in range(num_clusters)}
-lines = []
+# Load configurations from the config.json file
+with open('config.json') as config_file:
+    config = json.load(config_file)
+
+# Set up the plot for real-time visualization
 fig, ax = plt.subplots()
+ax.set_xlim(-config['world_width'], config['world_width'])
+ax.set_ylim(-config['world_height'], config['world_height'])
+ax.set_title('Cluster Centers Over Time')
+ax.grid(True)
 
-ax.set_xlim(0, 240)
-ax.set_ylim(0, 240)
-ax.set_title('Trajectories')
+# Prepare scatter plot objects for each cluster color
+scatter_plots = {
+    'red': ax.scatter([], [], c='red', s=10),
+    'green': ax.scatter([], [], c='green', s=10),
+    'blue': ax.scatter([], [], c='blue', s=10),
+    'yellow': ax.scatter([], [], c='yellow', s=10)
+}
 
-for i in range(num_clusters):
-    ln, = plt.plot([], [], 'o-', label=f'Cluster {i+1}')
-    lines.append(ln)
-plt.legend()
+# The colors for each cluster center
+cluster_colors = ['red', 'green', 'blue', 'yellow']
 
-def init():
-    for line in lines:
-        line.set_data([], [])
-        return lines
+# Dummy data - Replace this with actual voxel positions and colors as per your data retrieval method
+voxel_positions = np.zeros((config['world_width'], config['world_height'], config['world_depth']))
+voxel_colors = np.zeros_like(voxel_positions)
 
-def update(frame_cnt):
+plt.ion()  # Turn on interactive mode
 
-    voxel_positions, voxel_colors = set_multi_voxel_positions(240, 80, 240, frame_cnt, frame_cnt)
+curr_time = 0
+while True:  # Replace with a suitable condition to stop
+    # Update voxel data
+    if curr_time % 24 == 0:
+        voxel_positions, voxel_colors = set_multi_voxel_positions(
+            config['world_width'], config['world_height'], config['world_depth'], curr_time, frame_cnt=curr_time
+        )
+    else:
+        voxel_positions, voxel_colors, _ = set_voxel_positions(
+            config['world_width'], config['world_height'], config['world_depth'], curr_time
+        )
 
+    # Update colors and get the centers from the clustering function
     _, centers = set_voxel_colors(voxel_positions, voxel_colors)
 
-    for idx, center in enumerate(centers):
-        cluster_trajectories[idx].append(center)
-        x_data = [point[0] for point in cluster_trajectories[idx]]
-        y_data = [point[1] for point in cluster_trajectories[idx]]
-        lines[idx].set_data(x_data, y_data)
+    # Since `centers` might be more than the number of colors, we use modulo to cycle through colors
+    for i, center in enumerate(centers):
+        color = cluster_colors[i % len(cluster_colors)]
+        scatter_plots[color].set_offsets(np.vstack((scatter_plots[color].get_offsets(), [center[:2]])))  # Plot only x, y
 
-    return lines
+    print(f"Current time: {curr_time}, centers: {centers}")
 
-ani = FuncAnimation(fig, update, frames=range(0, 648, 12), init_func=init, blit=True)
+    # Update the display
+    plt.pause(0.001)  # Pause briefly to allow the plot to update
 
-plt.show()
+    # Increment time
+    curr_time += 1
+
+    # Add a break condition here if necessary
+    # ...
+
+plt.ioff()  # Turn off interactive mode when finished plotting
+plt.show()  # Display the final plot
