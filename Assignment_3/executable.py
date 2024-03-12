@@ -12,6 +12,7 @@ from engine.config import config
 # used for assignments:
 from assignment import set_voxel_positions, set_multi_voxel_positions, generate_grid, get_cam_positions, get_cam_rotation_matrices
 from cluster import set_voxel_colors, cluster_project
+from color import histogram
 
 cube, hdrbuffer, blurbuffer, lastPosX, lastPosY = None, None, None, None, None
 firstTime = True
@@ -209,8 +210,11 @@ def key_callback(window, key, scancode, action, mods):
             cluster_project(projects[i], new_colors, i)
         curr_time += 1
 
-    # color model (GMM):
-    # if key == glfw.KEY_C and action == glfw.PRESS:
+    # color model (histogram):
+    if key == glfw.KEY_C and action == glfw.PRESS:
+        _, _, projects = set_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time)
+        img_path = './data/cam4'
+        histogram(img_path, projects[3])
 
     # movement simulation:
     if key == glfw.KEY_T and action == glfw.PRESS:
