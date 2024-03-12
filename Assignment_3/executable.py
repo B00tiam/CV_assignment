@@ -12,7 +12,7 @@ from engine.config import config
 # used for assignments:
 from assignment import set_voxel_positions, set_multi_voxel_positions, generate_grid, get_cam_positions, get_cam_rotation_matrices
 from cluster import set_voxel_colors, cluster_project
-from color import histogram
+from color import histogram, live_matching
 
 cube, hdrbuffer, blurbuffer, lastPosX, lastPosY = None, None, None, None, None
 firstTime = True
@@ -185,7 +185,7 @@ def resize_callback(window, w, h):
 
 
 def key_callback(window, key, scancode, action, mods):
-    global cube, curr_time
+    global cube, curr_time, hist_list, video, curr_t, curr_f
 
     # quit the window
     if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
@@ -219,13 +219,20 @@ def key_callback(window, key, scancode, action, mods):
     # movement simulation and matching:
     if key == glfw.KEY_T and action == glfw.PRESS:
         # 2700 = 54 * 50 frames
-        positions, colors = set_multi_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time, frame_cnt=curr_time * 50)
+        positions, colors, projects = set_multi_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time, frame_cnt=curr_time * 50)
         # coloring func
         # index = 3 is the right voxel set
-        new_colors, _ = set_voxel_colors(positions, colors)
-        cube.set_multiple_positions(positions, new_colors)
+        colors1, _ = set_voxel_colors(positions[3], colors[3])
+        # re-matching:
+        if curr_time == 0:
+            video_path = './data/cam4/video.avi'
+            curr_t = 0
+            curr_f = 0
+            curr_t, curr_f, video, new_colors, hist_list = live_matching(video_path, curr_t, curr_f, None, projects[3], colors1, None)
+        else:
+            curr_t, curr_f, video, new_colors, hist_list = live_matching(None, curr_t, curr_f, video, projects[3], colors1, hist_list)
+        cube.set_multiple_positions(positions[3], new_colors)
         curr_time += 1
-
 
 def mouse_move(win, pos_x, pos_y):
     global firstTime, camera, lastPosX, lastPosY

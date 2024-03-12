@@ -37,6 +37,11 @@ def set_multi_voxel_positions(width, height, depth, curr_time, frame_cnt):
     if len(lookup_table) == 0:
         create_lookup_table(width, height, depth)
 
+    # initialize voxel list and projection list and color list
+    voxel_list = []
+    projection_list = []
+    color_list = []
+
     # swap y and z
     voxel_grid = np.ones((width, depth, height), np.float32)
 
@@ -72,6 +77,9 @@ def set_multi_voxel_positions(width, height, depth, curr_time, frame_cnt):
         # determine foreground
         foreground_image = background_subtraction(image, background_models[i_camera])
 
+        # projected points set for each cam
+        projections = []
+
         # set voxel to off if it is not visible in the camera, or is not in the foreground
         for x in range(width):
             for y in range(height):
@@ -88,11 +96,18 @@ def set_multi_voxel_positions(width, height, depth, curr_time, frame_cnt):
                     if projection_x < 0 or projection_y < 0 or projection_x >= foreground_image.shape[1] or projection_y >= foreground_image.shape[0] or not foreground_image[projection_y, projection_x]:
                         voxel_grid[x, z, y] = 0.0
                         continue
+                    # get projected points
+                    projections.append([projection_x, projection_y])
 
-    # put voxels that are on in list
-    voxel_list, color_list = put_voxel(width, height, depth, voxel_grid)
+        # add cam's projected points
+        projection_list.append(projections)
 
-    return voxel_list, color_list
+        # put voxels that are on in list
+        voxels, colors = put_voxel(width, height, depth, voxel_grid)
+        voxel_list.append(voxels)
+        color_list.append(colors)
+
+    return voxel_list, color_list, projection_list
 
 # determines which voxels should be set
 def set_voxel_positions(width, height, depth, curr_time):
