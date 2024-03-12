@@ -216,7 +216,7 @@ def key_callback(window, key, scancode, action, mods):
         img_path = './data/cam4'
         histogram(img_path, projects[3], new_colors)
 
-    # movement simulation:
+    # movement simulation and matching:
     if key == glfw.KEY_T and action == glfw.PRESS:
         # 2700 = 54 * 50 frames
         positions, colors = set_multi_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time, frame_cnt=curr_time * 50)

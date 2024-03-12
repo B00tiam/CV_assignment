@@ -3,8 +3,12 @@ import cv2 as cv
 import numpy as np
 from matplotlib import pyplot as plt
 
+def paint_histogram(hist):
+    return
+
 def histogram(img_path, project_list, color_list):
 
+    # list of histograms
     # get pic
     origin_path = img_path + '/origin_img.jpg'
 
@@ -41,4 +45,12 @@ def histogram(img_path, project_list, color_list):
     '''
 
 # hungarian func used for deciding the best match
-# def hungarian_algorithm(distances):
+def hungarian_algorithm(distances):
+    return
+
+# calculate distance
+def compute_distance(color1, color2):
+    return
+
+def live_matching():
+    return
