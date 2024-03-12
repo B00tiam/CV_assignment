@@ -211,14 +211,15 @@ def key_callback(window, key, scancode, action, mods):
 
     # color model (histogram):
     if key == glfw.KEY_C and action == glfw.PRESS:
-        _, _, projects = set_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time)
+        positions, colors, projects = set_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time)
+        new_colors, _ = set_voxel_colors(positions[3], colors[3])
         img_path = './data/cam4'
-        histogram(img_path, projects[3])
+        histogram(img_path, projects[3], new_colors)
 
     # movement simulation:
     if key == glfw.KEY_T and action == glfw.PRESS:
-        # 648 frames
-        positions, colors = set_multi_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time, frame_cnt=curr_time * 24)
+        # 2700 = 54 * 50 frames
+        positions, colors = set_multi_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time, frame_cnt=curr_time * 50)
         # coloring func
         # index = 3 is the right voxel set
         new_colors, _ = set_voxel_colors(positions, colors)
