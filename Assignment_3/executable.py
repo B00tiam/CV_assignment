@@ -193,7 +193,6 @@ def key_callback(window, key, scancode, action, mods):
 
     # clustering
     if key == glfw.KEY_G and action == glfw.PRESS:
-
         positions, colors, _ = set_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time)
         # coloring func
         # index = 3 is the right voxel set

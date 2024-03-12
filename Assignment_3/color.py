@@ -23,7 +23,8 @@ def histogram(img_path, project_list):
     cv.waitKey(0)
     cv.destroyAllWindows()
 
-    # egt histogram
+    # get histogram
+    '''
     color = ('b', 'g', 'r')
     for i, col in enumerate(color):
         hist = cv.calcHist([org_img], [i], mask, [256], [0, 256])
@@ -33,7 +34,7 @@ def histogram(img_path, project_list):
 
     plt.title("Histogram")
     plt.show()
-
+    '''
 
 
 # histogram('./data/cam4')
