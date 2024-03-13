@@ -25,13 +25,13 @@ max_frames = 100  # Example limit for the simulation
 
 while curr_time < max_frames:
     # Simulate getting voxel positions and colors for current frame
-    voxel_positions, voxel_colors = set_multi_voxel_positions(config['world_width'], config['world_height'],
-                                                              config['world_depth'], curr_time, curr_time)
+    # 54 times
+    voxel_positions, voxel_colors, _ = set_multi_voxel_positions(config['world_width'], config['world_height'], config['world_depth'], curr_time, frame_cnt=curr_time * 50)
 
     # Simulate processing voxel data to obtain cluster centers
-    _, centers = set_voxel_colors(voxel_positions, voxel_colors)
+    _, centers = set_voxel_colors(voxel_positions[3], voxel_colors[3])
 
-    print(f"Frame: {curr_time}, Centers shape: {centers.shape}, Centers: {centers}")
+    print(f"Frame: {curr_time * 50}, Centers shape: {centers.shape}, Centers: {centers}")
 
     # Append current centers to the list
     all_centers.append(centers)
