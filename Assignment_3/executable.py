@@ -228,7 +228,7 @@ def key_callback(window, key, scancode, action, mods):
         # index = 3 is the right voxel set
         colors1, _ = set_voxel_colors(positions[3], colors[3])
         # re-matching:
-        
+
         '''
         if curr_time == 0:
             video_path = './data/cam4/video.avi'
@@ -238,7 +238,7 @@ def key_callback(window, key, scancode, action, mods):
         else:
             curr_t, curr_f, video, new_colors, hist_list = live_matching(None, curr_t, curr_f, video, projects[3], colors1, hist_list)
         '''
-        cube.set_multiple_positions(positions[3], new_colors)
+        cube.set_multiple_positions(positions[3], colors1)
         # cube.set_multiple_positions(positions[3], colors1)
         curr_time += 1
 
