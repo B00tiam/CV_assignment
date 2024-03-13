@@ -45,8 +45,8 @@ def histogram(org_img, project_list, color_list):
         # color = ('b', 'g', 'r')
         hist = cv.calcHist([org_hsv], [0, 1], mask, [16, 16], [0, 180, 120, 256], accumulate=False)
         total_sum_bins = np.sum(hist)
-        if total_sum_bins > 0:
-            hist = hist / total_sum_bins
+        # if total_sum_bins > 0:
+            # hist = hist / total_sum_bins
         cv.normalize(hist, hist, 0, 1, cv.NORM_MINMAX)
         hist_list.append(hist)
 
@@ -73,7 +73,7 @@ def hungarian_algorithm(distance_matrix):
 # calculate distance
 def compute_distance(hist_before, hist_after):
 
-    distance = cv.compareHist(hist_before, hist_after, cv.HISTCMP_BHATTACHARYYA)
+    distance = cv.compareHist(hist_before, hist_after, cv.HISTCMP_CHISQR)
 
     # return float distance
     return distance
