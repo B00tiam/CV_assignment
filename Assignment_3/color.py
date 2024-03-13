@@ -73,7 +73,7 @@ def hungarian_algorithm(distance_matrix):
 # calculate distance
 def compute_distance(hist_before, hist_after):
 
-    distance = cv.compareHist(hist_before, hist_after, cv.HISTCMP_CHISQR)
+    distance = cv.compareHist(hist_before, hist_after, cv.HISTCMP_INTERSECT)   # cv.HISTCMP_CHISQR
 
     # return float distance
     return distance
