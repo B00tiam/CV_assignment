@@ -5,12 +5,15 @@ import numpy as np
 from matplotlib import pyplot as plt
 from scipy.optimize import linear_sum_assignment
 
-def paint_histogram(hist):
-    plt.plot(hist)
-    plt.xlim([0, 256])
+def paint_histogram(hist_list):
+    fig, axs = plt.subplots(2, 2)
+    counter = -1
+    for i in range(2):
+        for j in range(2):
+            counter += 1
+            axs[i, j].plot(hist_list[counter], color='b')
 
-
-    plt.title("Histogram")
+    plt.title("Histograms")
     plt.show()
 
     return

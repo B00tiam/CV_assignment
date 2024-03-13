@@ -1,5 +1,6 @@
 import glm
 import glfw
+import cv2 as cv
 from engine.base.program import get_linked_program
 from engine.renderable.model import Model
 from engine.buffer.texture import *
@@ -12,7 +13,7 @@ from engine.config import config
 # used for assignments:
 from assignment import set_voxel_positions, set_multi_voxel_positions, generate_grid, get_cam_positions, get_cam_rotation_matrices
 from cluster import set_voxel_colors, cluster_project
-from color import histogram, live_matching
+from color import histogram, paint_histogram, live_matching
 
 cube, hdrbuffer, blurbuffer, lastPosX, lastPosY = None, None, None, None, None
 firstTime = True
@@ -213,8 +214,11 @@ def key_callback(window, key, scancode, action, mods):
     if key == glfw.KEY_C and action == glfw.PRESS:
         positions, colors, projects = set_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time)
         new_colors, _ = set_voxel_colors(positions[3], colors[3])
-        img_path = './data/cam4'
-        histogram(img_path, projects[3], new_colors)
+        org_img = cv.imread('./data/cam4/origin_img.jpg')
+        hists = histogram(org_img, projects[3], new_colors)
+        paint_histogram(hists)
+
+        curr_time += 10
 
     # movement simulation and matching:
     if key == glfw.KEY_T and action == glfw.PRESS:
