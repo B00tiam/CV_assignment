@@ -216,10 +216,12 @@ def background_subtraction(image, background_model):
     foreground_image = background_model.apply(image, learningRate=0)
     
     # remove noise through dilation and erosion
+    '''
     erosion_elt = cv.getStructuringElement(cv.MORPH_ELLIPSE, (3, 3))
     dilation_elt = cv.getStructuringElement(cv.MORPH_ELLIPSE, (3, 3))
     foreground_image = cv.dilate(foreground_image, dilation_elt)
     foreground_image = cv.erode(foreground_image, erosion_elt)
+    '''
 
 
     # foreground filter

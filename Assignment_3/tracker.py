@@ -12,16 +12,18 @@ with open('config.json') as config_file:
 create_lookup_table(config['world_width'], config['world_height'], config['world_depth'])
 
 fig, ax = plt.subplots()
-ax.set_xlim(-config['world_width'], config['world_width'])
-ax.set_ylim(-config['world_height'], config['world_height'])
-ax.set_title('Cluster Centers Over Time')
+# ax.set_xlim(-config['world_width'], config['world_width'])
+# ax.set_ylim(-config['world_height'], config['world_height'])
+ax.set_xlim(-100, 100)
+ax.set_ylim(-100, 100)
+ax.set_title('Track Over Time')
 ax.grid(True)
 
 # Store all cluster centers
 all_centers = []
 
 curr_time = 0
-max_frames = 100  # Example limit for the simulation
+max_frames = 25  # Example limit for the simulation (max: 25)
 
 while curr_time < max_frames:
     # Simulate getting voxel positions and colors for current frame
@@ -39,7 +41,14 @@ while curr_time < max_frames:
     curr_time += 1  # Move to the next frame
 
 # Plot all cluster centers
-for centers in all_centers:
-    ax.scatter(centers[:, 0], centers[:, 1], alpha=0.5)  # Adjust alpha for visualization
+colors = ['red', 'green', 'blue', 'orange']
+
+for index, centers in enumerate(all_centers):
+    # print(index)
+    for i in range(4):
+        ax.scatter(centers[i, 0], centers[i, 1], alpha=0.5, color=colors[i])  # Adjust alpha for visualization
+        if index > 0:
+            # Paint the lines
+            ax.plot([all_centers[index - 1][i, 0], all_centers[index][i, 0]], [all_centers[index-1][i, 1], all_centers[index][i, 1]], '-o', color=colors[i])
 
 plt.show()  # Display the final plot after the loop is finished
