@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 import json
 
 from scipy.interpolate import CubicSpline
+from scipy.interpolate import interp1d
 
 from assignment import set_multi_voxel_positions, create_lookup_table
 from cluster import set_voxel_colors
@@ -53,15 +54,25 @@ def write_file(all_centers):
 
 def read_file(path):
     # Get the all_list from XML file
-    return
+    tree = ET.parse(path)
+    root = tree.getroot()
+    all_centers = []
+
+    for index in range(54):
+        centers = root.find("people" + str(index)).text
+        centers = centers.replace('\n', '').replace('[', '').replace(']', '').split()
+        centers = np.array(list(map(float, centers))).reshape(4, 2)
+        all_centers.append(centers)
+
+    return all_centers
 
 def draw_map(all_centers):
 
     fig, ax = plt.subplots()
     # ax.set_xlim(-config['world_width'], config['world_width'])
     # ax.set_ylim(-config['world_height'], config['world_height'])
-    ax.set_xlim(-100, 100)
-    ax.set_ylim(-100, 100)
+    ax.set_xlim(-20, 80)
+    ax.set_ylim(-110, 40)
     ax.set_title('Track Over Time')
     ax.grid(True)
     # Plot all cluster centers
@@ -70,15 +81,17 @@ def draw_map(all_centers):
     for index, centers in enumerate(all_centers):
         # print(index)
         for i in range(4):
-            ax.scatter(centers[i, 0], centers[i, 1], alpha=0.5, color=colors[i])  # Adjust alpha for visualization
+            ax.scatter(centers[i, 0], centers[i, 1], s=1, alpha=0.5, color=colors[i])  # Adjust alpha for visualization
             if index > 0:
                 # Paint the lines
                 x = [all_centers[index - 1][i, 0], all_centers[index][i, 0]]
                 y = [all_centers[index - 1][i, 1], all_centers[index][i, 1]]
-                x_smooth = np.linspace(x[0], x[1], 100)
-                y_smooth = np.linspace(y[0], y[1], 100)
-                ax.plot(x_smooth, y_smooth, '-o', color=colors[i])
+                # ax.plot(x, y, '-o', color=colors[i], linewidth=0.2)
+                x_smooth = np.linspace(x[0], x[1], 2)
+                y_smooth = np.linspace(y[0], y[1], 2)
+                ax.plot(x_smooth, y_smooth, '-o', color=colors[i], linewidth=0.5)
 
     plt.show()  # Display the final plot after the loop is finished
 
-write_file(get_data())
+# write_file(get_data())
+draw_map(read_file('./data/mapdata.xml'))
