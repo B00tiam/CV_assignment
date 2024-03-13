@@ -223,7 +223,7 @@ def key_callback(window, key, scancode, action, mods):
     # movement simulation and matching:
     if key == glfw.KEY_T and action == glfw.PRESS:
         # 2700 = 54 * 50 frames
-        positions, colors, projects = set_multi_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time, frame_cnt=curr_time * 1)
+        positions, colors, projects = set_multi_voxel_positions(config['world_width'], config['world_height'], config['world_width'], curr_time, frame_cnt=curr_time * 5)
         # coloring func
         # index = 3 is the right voxel set
         colors1, _ = set_voxel_colors(positions[3], colors[3])
