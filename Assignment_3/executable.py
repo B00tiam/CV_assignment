@@ -241,6 +241,7 @@ def key_callback(window, key, scancode, action, mods):
         cube.set_multiple_positions(positions[3], colors1)
         # cube.set_multiple_positions(positions[3], colors1)
         curr_time += 1
+        print("done!" + str(curr_time))
 
 def mouse_move(win, pos_x, pos_y):
     global firstTime, camera, lastPosX, lastPosY
