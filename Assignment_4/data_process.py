@@ -25,7 +25,6 @@ def get_data():
         transform=transform  # transform data
     )
 
-    # 加载测试集数据
     test_dataset = datasets.FashionMNIST(
         root='./data',
         train=False,
