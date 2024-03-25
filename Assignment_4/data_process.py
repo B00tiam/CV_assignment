@@ -42,7 +42,6 @@ def get_data():
 # train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
 # test loader
 # test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False)
-
 # get images & labels
 '''
 train_images = train_dataset.data
@@ -52,3 +51,15 @@ test_images = test_dataset.data
 test_labels = test_dataset.targets
 '''
 
+# test code
+'''
+train_dataset, val_dataset, test_dataset = get_data()
+# train loader
+train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=32, shuffle=True)
+print(len(train_dataset))
+print(len(train_loader))
+for images, labels in train_loader:
+    print(images.shape)
+    print(labels.shape)
+    
+'''
