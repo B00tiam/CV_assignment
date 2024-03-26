@@ -87,7 +87,7 @@ def train_validate(num_epochs):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
     # get data
-    train_dataset, val_dataset, test_dataset = get_data()
+    train_dataset, val_dataset, _ = get_data()
     # get loader
     # train loader
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
