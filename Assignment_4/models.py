@@ -3,6 +3,7 @@
 
 import torch
 import torch.nn as nn
+import torchvision.transforms as transforms
 
 class LeNet5_baseline(nn.Module):
     def __init__(self):
@@ -162,31 +163,29 @@ class LeNet5_var2(nn.Module):
         x = self.softmax(x)
         return x
 
-# var3: Adding a Third Convolutional Layer
+# var3: Changing Activation function to LeakyReLU
 class LeNet5_var3(nn.Module):
     def __init__(self):
         super(LeNet5_var3, self).__init__()
         # The first convolutional layer, activation function and pooling layer
         self.conv1 = nn.Conv2d(1, 6, kernel_size=5, padding=2)
+        # Adding Batch Normalisation after first convolutional layer
         self.bn1 = nn.BatchNorm2d(6)
-        self.relu1 = nn.ReLU()
+        self.relu1 = nn.LeakyReLU()
         self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)  # maxpool layer
         # The second convolutional layer, activation function and pooling layer
         self.conv2 = nn.Conv2d(6, 16, kernel_size=5)
+        # Adding Batch Normalisation after second convolutional layer
         self.bn2 = nn.BatchNorm2d(16)
-        self.relu2 = nn.ReLU()
+        self.relu2 = nn.LeakyReLU()
         self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
-        # Adding a third convolutional layer
-        self.conv3 = nn.Conv2d(16, 32, kernel_size=5)
-        self.bn3 = nn.BatchNorm2d(32)
-        self.relu3 = nn.ReLU()
-        self.pool3 = nn.MaxPool2d(kernel_size=2, stride=2)
         # Fully connected layers
         self.fc1 = nn.Linear(16 * 5 * 5, 120)  # size of fully connected layer 1
-        self.relu4 = nn.ReLU()
+        self.relu3 = nn.LeakyReLU()
+        # Adding dropout after first fully connected layer
         self.dropout1 = nn.Dropout(p=.5)
         self.fc2 = nn.Linear(120, 84)
-        self.relu5 = nn.ReLU()
+        self.relu4 = nn.LeakyReLU()
         self.fc3 = nn.Linear(84, 10)
         self.softmax = nn.Softmax(dim=1)  # softmax layer
 
@@ -195,9 +194,6 @@ class LeNet5_var3(nn.Module):
         nn.init.zeros_(self.conv1.bias)
         nn.init.kaiming_uniform_(self.conv2.weight)
         nn.init.zeros_(self.conv2.bias)
-        # For third layer
-        nn.init.kaiming_uniform_(self.conv3.weight)
-        nn.init.zeros_(self.conv3.bias)
         nn.init.kaiming_uniform_(self.fc1.weight)
         nn.init.zeros_(self.fc1.bias)
         nn.init.kaiming_uniform_(self.fc2.weight)
@@ -215,45 +211,40 @@ class LeNet5_var3(nn.Module):
         x = self.bn2(x)
         x = self.relu2(x)
         x = self.pool2(x)
-        x = self.conv3(x)
-        x = self.bn3(x)
-        x = self.relu3(x)
-        x = self.pool3(x)
         x = x.view(-1, 16 * 5 * 5)
         x = self.fc1(x)
-        x = self.relu4(x)
+        x = self.relu3(x)
+        # Adding dropout
         x = self.dropout1(x)
         x = self.fc2(x)
-        x = self.relu5(x)
+        x = self.relu4(x)
         x = self.fc3(x)
         x = self.softmax(x)
         return x
 
-# var4: Adjusting the kernel size of third layer to 3x3
+# var4: Adding data augmentation transformations
 class LeNet5_var4(nn.Module):
     def __init__(self):
         super(LeNet5_var4, self).__init__()
         # The first convolutional layer, activation function and pooling layer
         self.conv1 = nn.Conv2d(1, 6, kernel_size=5, padding=2)
+        # Adding Batch Normalisation after first convolutional layer
         self.bn1 = nn.BatchNorm2d(6)
-        self.relu1 = nn.ReLU()
+        self.relu1 = nn.LeakyReLU()
         self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)  # maxpool layer
         # The second convolutional layer, activation function and pooling layer
         self.conv2 = nn.Conv2d(6, 16, kernel_size=5)
+        # Adding Batch Normalisation after second convolutional layer
         self.bn2 = nn.BatchNorm2d(16)
-        self.relu2 = nn.ReLU()
+        self.relu2 = nn.LeakyReLU()
         self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
-        # Adding a third convolutional layer
-        self.conv3 = nn.Conv2d(16, 32, kernel_size=3, padding=1)
-        self.bn3 = nn.BatchNorm2d(32)
-        self.relu3 = nn.ReLU()
-        self.pool3 = nn.MaxPool2d(kernel_size=2, stride=2)
         # Fully connected layers
         self.fc1 = nn.Linear(16 * 5 * 5, 120)  # size of fully connected layer 1
-        self.relu4 = nn.ReLU()
+        self.relu3 = nn.LeakyReLU()
+        # Adding dropout after first fully connected layer
         self.dropout1 = nn.Dropout(p=.5)
         self.fc2 = nn.Linear(120, 84)
-        self.relu5 = nn.ReLU()
+        self.relu4 = nn.LeakyReLU()
         self.fc3 = nn.Linear(84, 10)
         self.softmax = nn.Softmax(dim=1)  # softmax layer
 
@@ -262,15 +253,21 @@ class LeNet5_var4(nn.Module):
         nn.init.zeros_(self.conv1.bias)
         nn.init.kaiming_uniform_(self.conv2.weight)
         nn.init.zeros_(self.conv2.bias)
-        # For third layer
-        nn.init.kaiming_uniform_(self.conv3.weight)
-        nn.init.zeros_(self.conv3.bias)
         nn.init.kaiming_uniform_(self.fc1.weight)
         nn.init.zeros_(self.fc1.bias)
         nn.init.kaiming_uniform_(self.fc2.weight)
         nn.init.zeros_(self.fc2.bias)
         nn.init.kaiming_uniform_(self.fc3.weight)
         nn.init.zeros_(self.fc3.bias)
+
+        self.transform = transforms.Compose([
+            transforms.RandomRotation(10),  # Rotate randomly up to 10 degrees
+            transforms.RandomHorizontalFlip(),  # Randomly flip horizontally
+            transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
+            # Adjust brightness, contrast, saturation, and hue
+            transforms.ToTensor(),
+            transforms.Normalize((0.5,), (0.5,))
+        ])
 
     # forward func
     def forward(self, x):
@@ -282,16 +279,14 @@ class LeNet5_var4(nn.Module):
         x = self.bn2(x)
         x = self.relu2(x)
         x = self.pool2(x)
-        x = self.conv3(x)
-        x = self.bn3(x)
-        x = self.relu3(x)
-        x = self.pool3(x)
         x = x.view(-1, 16 * 5 * 5)
         x = self.fc1(x)
-        x = self.relu4(x)
+        x = self.relu3(x)
+        # Adding dropout
         x = self.dropout1(x)
         x = self.fc2(x)
-        x = self.relu5(x)
+        x = self.relu4(x)
         x = self.fc3(x)
         x = self.softmax(x)
         return x
+
