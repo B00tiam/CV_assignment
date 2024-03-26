@@ -2,6 +2,7 @@ from data_process import get_data
 import models
 
 import os
+import logging
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -51,7 +52,7 @@ def validate(model, val_loader, device, loss_func):
 
     return model, val_loss, val_acc
 
-def save_model(model):
+def get_dir():
     # find the next available subdirectory name
     save_dir = 'models'
     sub_dirs = os.listdir(save_dir)
@@ -66,10 +67,20 @@ def save_model(model):
     sub_dir = f'{new_dir_num:02}'
     save_path = os.path.join(save_dir, sub_dir)
     os.makedirs(save_path, exist_ok=True)
+
+    return save_path
+
+def save_model(model, save_path):
     # save the trained model in the subdirectory
     save_file = os.path.join(save_path, 'saved_model.pth')
     torch.save(model.state_dict(), save_file)
     print(f"Model saved in {save_file}.")
+
+def save_log(epoch, train_loss, train_acc, val_loss, val_acc, save_path, model_name):
+    log_path = os.path.join(save_path, 'training.log')
+    logging.basicConfig(filename=log_path, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.info(f'Training model: {model_name}')
+    logging.info(f'Epoch [{epoch + 1}/{num_epochs}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Accuracy: {val_acc:.4f}')
 
 def train_validate(num_epochs):
     # check if the device use GPU/CPU
@@ -77,7 +88,6 @@ def train_validate(num_epochs):
     print(device)
     # get data
     train_dataset, val_dataset, test_dataset = get_data()
-
     # get loader
     # train loader
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
@@ -87,6 +97,10 @@ def train_validate(num_epochs):
     # initialize model
     # baseline
     model = models.LeNet5_baseline().to(device)
+    model_name = model.__class__.__name__
+
+    # Model save path
+    save_path = get_dir()
 
     # loss func and optimizer
     loss_func = nn.CrossEntropyLoss()
@@ -100,9 +114,10 @@ def train_validate(num_epochs):
         model, val_loss, val_acc = validate(model, val_loader, device, loss_func)
 
         print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Accuracy: {val_acc:.4f}")
+        save_log(epoch, train_loss, train_acc, val_loss, val_acc, save_path, model_name)
 
     # Save the model file
-    save_model(model)
+    save_model(model, save_path)
 
 num_epochs = 5
 train_validate(num_epochs)
