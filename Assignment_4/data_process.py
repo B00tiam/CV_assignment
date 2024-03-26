@@ -38,11 +38,6 @@ def get_data():
     return train_dataset, val_dataset, test_dataset
 
 
-# train loader
-# train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
-# test loader
-# test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False)
-# get images & labels
 '''
 train_images = train_dataset.data
 train_labels = train_dataset.targets

@@ -15,7 +15,7 @@ class LeNet5_baseline(nn.Module):
         self.conv2 = nn.Conv2d(6, 16, kernel_size=5)
         self.relu2 = nn.ReLU()
         self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
-        # Three fully connected layers
+        # Fully connected layers
         self.fc1 = nn.Linear(16 * 5 * 5, 120)  # size of fully connected layer 1
         self.relu3 = nn.ReLU()
         self.fc2 = nn.Linear(120, 84)
@@ -51,3 +51,11 @@ class LeNet5_baseline(nn.Module):
         x = self.fc3(x)
         x = self.softmax(x)
         return x
+
+# class LeNet5_var1(nn.Module):
+
+# class LeNet5_var2(nn.Module):
+
+# class LeNet5_var3(nn.Module):
+
+# class LeNet5_var4(nn.Module):
