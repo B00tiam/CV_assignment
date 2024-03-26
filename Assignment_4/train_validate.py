@@ -7,6 +7,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
+
 def train(model, train_loader, device, optimizer, loss_func):
     model.train()
     running_loss = 0.0

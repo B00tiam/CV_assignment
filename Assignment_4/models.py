@@ -51,6 +51,17 @@ class LeNet5_baseline(nn.Module):
         x = self.fc3(x)
         x = self.softmax(x)
         return x
+    # get output
+    def get_fc_output(self, x):
+        x = self.conv1(x)
+        x = self.relu1(x)
+        x = self.pool1(x)
+        x = self.conv2(x)
+        x = self.relu2(x)
+        x = self.pool2(x)
+        x = x.view(-1, 16 * 5 * 5)
+        x = self.fc1(x)
+        return x
 
 # var1: with Dropout
 class LeNet5_var1(nn.Module):
