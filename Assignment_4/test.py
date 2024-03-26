@@ -27,8 +27,8 @@ def get_dir():
 
     return save_path
 
-def get_model(save_path):
-    model = models.LeNet5_baseline().to(device)
+def get_model(save_path, model):
+
     save_file = os.path.join(save_path, 'saved_model.pth')
     model.load_state_dict(torch.load(save_file))
     print(f"Model loaded from {save_file}.")
@@ -39,10 +39,11 @@ def test():
     # check if the device use GPU/CPU
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
+    model = models.LeNet5_baseline().to(device)
     # get data
     _, _, test_dataset = get_data()
     # load the saved model
-    model = get_model(save_path)
+    model = get_model(save_path, model)
     # test loader
     test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False)
 
