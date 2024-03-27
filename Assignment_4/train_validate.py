@@ -7,6 +7,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
+from torchsummary import summary
 
 def paint(train_loss_list, train_acc_list, val_loss_list, val_acc_list, save_path):
     # draw 2 graphs
@@ -92,13 +93,15 @@ def save_model(model, save_path):
     torch.save(model.state_dict(), save_file)
     print(f"Model saved in {save_file}.")
 
-def save_log(epoch, train_loss, train_acc, val_loss, val_acc, save_path, model_name):
+def save_log(epoch, train_loss, train_acc, val_loss, val_acc, save_path, model_name, best_epoch, best_acc):
+    # logging
     log_path = os.path.join(save_path, 'training.log')
     logging.basicConfig(filename=log_path, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     logging.info(f'Training model: {model_name}')
-    logging.info(f'Epoch [{epoch + 1}/{num_epochs}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Accuracy: {val_acc:.4f}')
+    logging.info(f'Epoch [{epoch + 1}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Accuracy: {val_acc:.4f}')
+    logging.info(f'The best Accuracy: {best_acc}, which belongs to Epoch [{best_epoch + 1}]')
 
-def train_validate(num_epochs):
+def train_validate(num_epochs, model_choice):
     # check if the device use GPU/CPU
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
@@ -111,9 +114,24 @@ def train_validate(num_epochs):
     val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=64, shuffle=False)
 
     # initialize model
-    # baseline
-    model = models.LeNet5_baseline().to(device)
+    if model_choice == 0:
+        # baseline
+        model = models.LeNet5_baseline().to(device)
+    elif model_choice == 1:
+        # var1
+        model = models.LeNet5_var1().to(device)
+    elif model_choice == 2:
+        # var2
+        model = models.LeNet5_var2().to(device)
+    elif model_choice == 3:
+        # var3
+        model = models.LeNet5_var3().to(device)
+    else:
+        # var4
+        model = models.LeNet5_var4().to(device)
     model_name = model.__class__.__name__
+    # Summary the model
+    summary(model, (1, 28, 28))
 
     # Model save path
     save_path = get_dir()
@@ -125,6 +143,7 @@ def train_validate(num_epochs):
     # Best model according to the best accuracy on validation dataset
     best_acc = 0.0
     best_model = None
+    best_epoch = 0
 
     # train & validate
     train_loss_list = []
@@ -140,9 +159,10 @@ def train_validate(num_epochs):
         if val_acc > best_acc:
             best_model = model
             best_acc = val_acc
+            best_epoch = epoch
 
         print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Accuracy: {val_acc:.4f}")
-        save_log(epoch, train_loss, train_acc, val_loss, val_acc, save_path, model_name)
+        save_log(epoch, train_loss, train_acc, val_loss, val_acc, save_path, model_name, best_epoch, best_acc)
 
         train_acc_list.append(train_acc)
         train_loss_list.append(train_loss)
@@ -154,5 +174,6 @@ def train_validate(num_epochs):
     # Paint the chart
     paint(train_loss_list, train_acc_list, val_loss_list, val_acc_list, save_path)
 
-num_epochs = 15
-train_validate(num_epochs)
+# test code
+# num_epochs = 15
+# train_validate(num_epochs)

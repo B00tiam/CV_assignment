@@ -79,4 +79,4 @@ def test():
     print(f"Test Accuracy: {test_acc:.4f}")
 
 # test code
-test()
+# test()
