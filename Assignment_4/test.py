@@ -49,12 +49,28 @@ def get_model(save_path, model):
     print(f"Model loaded from {save_file}.")
     return model
 
-def test():
+def test(model_choice):
     save_path = get_dir()
     # check if the device use GPU/CPU
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
-    model = models.LeNet5_baseline().to(device)
+    # initialize model
+    if model_choice == 0:
+        # baseline
+        model = models.LeNet5_baseline().to(device)
+    elif model_choice == 1:
+        # var1
+        model = models.LeNet5_var1().to(device)
+    elif model_choice == 2:
+        # var2
+        model = models.LeNet5_var2().to(device)
+    elif model_choice == 3:
+        # var3
+        model = models.LeNet5_var3().to(device)
+    else:
+        # var4
+        model = models.LeNet5_var4().to(device)
+
     # get data
     _, _, test_dataset = get_data()
     # load the saved model

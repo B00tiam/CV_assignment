@@ -8,8 +8,9 @@ import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
 from torchsummary import summary
+from torch.optim.lr_scheduler import StepLR
 
-def paint(train_loss_list, train_acc_list, val_loss_list, val_acc_list, save_path):
+def paint(lr_his, train_loss_list, train_acc_list, val_loss_list, val_acc_list, save_path):
     # draw 2 graphs
     plt.subplot(121)
     plt.plot(train_acc_list[:], '-o', label="train_acc")
@@ -22,6 +23,15 @@ def paint(train_loss_list, train_acc_list, val_loss_list, val_acc_list, save_pat
     plt.title("Loss")
     plt.legend()
     plt.savefig(save_path + '/acc_loss.png')
+    plt.show()
+    # draw lr graph
+    plt.figure(figsize=(10, 6))
+    plt.plot(lr_his, marker='o', linestyle='-')
+    plt.title('Learning Rate')
+    plt.xlabel('Epoch')
+    plt.ylabel('lr')
+    plt.grid(True)
+    plt.savefig(save_path + '/lr.png')
     plt.show()
 
 def train(model, train_loader, device, optimizer, loss_func):
@@ -93,12 +103,12 @@ def save_model(model, save_path):
     torch.save(model.state_dict(), save_file)
     print(f"Model saved in {save_file}.")
 
-def save_log(epoch, train_loss, train_acc, val_loss, val_acc, save_path, model_name, best_epoch, best_acc):
+def save_log(epoch, train_loss, train_acc, val_loss, val_acc, save_path, model_name, best_epoch, best_acc, cur_lr):
     # logging
     log_path = os.path.join(save_path, 'training.log')
     logging.basicConfig(filename=log_path, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     logging.info(f'Training model: {model_name}')
-    logging.info(f'Epoch [{epoch + 1}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Accuracy: {val_acc:.4f}')
+    logging.info(f'Epoch [{epoch + 1}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Accuracy: {val_acc:.4f}, Current lr: {cur_lr}')
     logging.info(f'The best Accuracy: {best_acc}, which belongs to Epoch [{best_epoch + 1}]')
 
 def train_validate(num_epochs, model_choice):
@@ -139,6 +149,9 @@ def train_validate(num_epochs, model_choice):
     # loss func and optimizer
     loss_func = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
+    # learning rate scheduler
+    scheduler = StepLR(optimizer, step_size=5, gamma=0.5)
+    lr_his = []
 
     # Best model according to the best accuracy on validation dataset
     best_acc = 0.0
@@ -154,15 +167,18 @@ def train_validate(num_epochs, model_choice):
 
         model, train_loss, train_acc = train(model, train_loader, device, optimizer, loss_func)
         model, val_loss, val_acc = validate(model, val_loader, device, loss_func)
-
+        # learning rate
+        cur_lr = optimizer.param_groups[0]['lr']
+        lr_his.append(cur_lr)
         # compare the accuracy on validation:
         if val_acc > best_acc:
             best_model = model
             best_acc = val_acc
             best_epoch = epoch
 
-        print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Accuracy: {val_acc:.4f}")
-        save_log(epoch, train_loss, train_acc, val_loss, val_acc, save_path, model_name, best_epoch, best_acc)
+        print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Accuracy: {val_acc:.4f}, Current lr: {cur_lr}")
+        save_log(epoch, train_loss, train_acc, val_loss, val_acc, save_path, model_name, best_epoch, best_acc, cur_lr)
+        scheduler.step()
 
         train_acc_list.append(train_acc)
         train_loss_list.append(train_loss)
@@ -172,7 +188,7 @@ def train_validate(num_epochs, model_choice):
     # Save the best model file
     save_model(best_model, save_path)
     # Paint the chart
-    paint(train_loss_list, train_acc_list, val_loss_list, val_acc_list, save_path)
+    paint(lr_his, train_loss_list, train_acc_list, val_loss_list, val_acc_list, save_path)
 
 # test code
 # num_epochs = 15
