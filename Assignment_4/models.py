@@ -52,17 +52,6 @@ class LeNet5_baseline(nn.Module):
         x = self.fc3(x)
         x = self.softmax(x)
         return x
-    # get output
-    def get_fc_output(self, x):
-        x = self.conv1(x)
-        x = self.relu1(x)
-        x = self.pool1(x)
-        x = self.conv2(x)
-        x = self.relu2(x)
-        x = self.pool2(x)
-        x = x.view(-1, 16 * 5 * 5)
-        x = self.fc1(x)
-        return x
 
 # var1: with Dropout
 class LeNet5_var1(nn.Module):
@@ -233,7 +222,7 @@ class LeNet5_var3(nn.Module):
         x = self.softmax(x)
         return x
 
-# var4: Adding data augmentation transformations
+# var4: Replacing max pooling with average pooling
 class LeNet5_var4(nn.Module):
     def __init__(self):
         super(LeNet5_var4, self).__init__()
@@ -242,13 +231,13 @@ class LeNet5_var4(nn.Module):
         # Adding Batch Normalisation after first convolutional layer
         self.bn1 = nn.BatchNorm2d(6)
         self.relu1 = nn.LeakyReLU()
-        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)  # maxpool layer
+        self.pool1 = nn.AvgPool2d(kernel_size=2, stride=2)  # Chaning to avg pooling
         # The second convolutional layer, activation function and pooling layer
         self.conv2 = nn.Conv2d(6, 16, kernel_size=5)
         # Adding Batch Normalisation after second convolutional layer
         self.bn2 = nn.BatchNorm2d(16)
         self.relu2 = nn.LeakyReLU()
-        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
+        self.pool2 = nn.AvgPool2d(kernel_size=2, stride=2)
         # Fully connected layers
         self.fc1 = nn.Linear(16 * 5 * 5, 120)  # size of fully connected layer 1
         self.relu3 = nn.LeakyReLU()
@@ -270,15 +259,6 @@ class LeNet5_var4(nn.Module):
         nn.init.zeros_(self.fc2.bias)
         nn.init.kaiming_uniform_(self.fc3.weight)
         nn.init.zeros_(self.fc3.bias)
-
-        self.transform = transforms.Compose([
-            transforms.RandomRotation(10),  # Rotate randomly up to 10 degrees
-            transforms.RandomHorizontalFlip(),  # Randomly flip horizontally
-            transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
-            # Adjust brightness, contrast, saturation, and hue
-            transforms.ToTensor(),
-            transforms.Normalize((0.5,), (0.5,))
-        ])
 
     # forward func
     def forward(self, x):
