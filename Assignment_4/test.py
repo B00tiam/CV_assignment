@@ -73,7 +73,7 @@ def test():
             _, predicted = torch.max(outputs.data, 1)
             test_total += labels.size(0)
             test_correct += (predicted == labels).sum().item()
-            show_t_SNE(images, model)
+            # show_t_SNE(images, model)
 
     test_acc = test_correct / test_total
     print(f"Test Accuracy: {test_acc:.4f}")

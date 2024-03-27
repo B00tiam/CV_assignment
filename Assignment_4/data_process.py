@@ -38,14 +38,6 @@ def get_data():
     return train_dataset, val_dataset, test_dataset
 
 
-'''
-train_images = train_dataset.data
-train_labels = train_dataset.targets
-
-test_images = test_dataset.data
-test_labels = test_dataset.targets
-'''
-
 # test code
 '''
 train_dataset, val_dataset, test_dataset = get_data()

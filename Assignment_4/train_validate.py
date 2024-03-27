@@ -6,7 +6,22 @@ import logging
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import matplotlib.pyplot as plt
 
+def paint(train_loss_list, train_acc_list, val_loss_list, val_acc_list, save_path):
+    # draw 2 graphs
+    plt.subplot(121)
+    plt.plot(train_acc_list[:], '-o', label="train_acc")
+    plt.plot(val_acc_list[:], '-o', label="val_acc")
+    plt.title('Accuracy')
+    plt.legend()
+    plt.subplot(122)
+    plt.plot(train_loss_list[:], '-o', label="train_loss")
+    plt.plot(val_loss_list[:], '-o', label="val_loss")
+    plt.title("Loss")
+    plt.legend()
+    plt.savefig(save_path + '/acc_loss.png')
+    plt.show()
 
 def train(model, train_loader, device, optimizer, loss_func):
     model.train()
@@ -107,18 +122,37 @@ def train_validate(num_epochs):
     loss_func = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-    # train & test
+    # Best model according to the best accuracy on validation dataset
+    best_acc = 0.0
+    best_model = None
 
+    # train & validate
+    train_loss_list = []
+    train_acc_list = []
+    val_loss_list = []
+    val_acc_list = []
     for epoch in range(num_epochs):
 
         model, train_loss, train_acc = train(model, train_loader, device, optimizer, loss_func)
         model, val_loss, val_acc = validate(model, val_loader, device, loss_func)
 
+        # compare the accuracy on validation:
+        if val_acc > best_acc:
+            best_model = model
+            best_acc = val_acc
+
         print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Accuracy: {val_acc:.4f}")
         save_log(epoch, train_loss, train_acc, val_loss, val_acc, save_path, model_name)
 
-    # Save the model file
-    save_model(model, save_path)
+        train_acc_list.append(train_acc)
+        train_loss_list.append(train_loss)
+        val_acc_list.append(val_acc)
+        val_loss_list.append(val_loss)
 
-num_epochs = 5
+    # Save the best model file
+    save_model(best_model, save_path)
+    # Paint the chart
+    paint(train_loss_list, train_acc_list, val_loss_list, val_acc_list, save_path)
+
+num_epochs = 15
 train_validate(num_epochs)

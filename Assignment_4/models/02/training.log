@@ -1,0 +1,30 @@
+2024-03-27 14:40:50,621 - INFO - Training model: LeNet5_baseline
+2024-03-27 14:40:50,621 - INFO - Epoch [1/15], Train Loss: 1.8220, Train Accuracy: 0.6403, Val Loss: 1.7164, Val Accuracy: 0.7479
+2024-03-27 14:41:04,496 - INFO - Training model: LeNet5_baseline
+2024-03-27 14:41:04,496 - INFO - Epoch [2/15], Train Loss: 1.6741, Train Accuracy: 0.7876, Val Loss: 1.6613, Val Accuracy: 0.7999
+2024-03-27 14:41:17,792 - INFO - Training model: LeNet5_baseline
+2024-03-27 14:41:17,793 - INFO - Epoch [3/15], Train Loss: 1.6601, Train Accuracy: 0.8011, Val Loss: 1.6593, Val Accuracy: 0.8020
+2024-03-27 14:41:30,992 - INFO - Training model: LeNet5_baseline
+2024-03-27 14:41:30,992 - INFO - Epoch [4/15], Train Loss: 1.6345, Train Accuracy: 0.8264, Val Loss: 1.6031, Val Accuracy: 0.8588
+2024-03-27 14:41:44,521 - INFO - Training model: LeNet5_baseline
+2024-03-27 14:41:44,521 - INFO - Epoch [5/15], Train Loss: 1.5857, Train Accuracy: 0.8753, Val Loss: 1.5930, Val Accuracy: 0.8694
+2024-03-27 14:41:57,974 - INFO - Training model: LeNet5_baseline
+2024-03-27 14:41:57,974 - INFO - Epoch [6/15], Train Loss: 1.5751, Train Accuracy: 0.8855, Val Loss: 1.5800, Val Accuracy: 0.8805
+2024-03-27 14:42:11,839 - INFO - Training model: LeNet5_baseline
+2024-03-27 14:42:11,839 - INFO - Epoch [7/15], Train Loss: 1.5699, Train Accuracy: 0.8916, Val Loss: 1.5805, Val Accuracy: 0.8816
+2024-03-27 14:42:25,090 - INFO - Training model: LeNet5_baseline
+2024-03-27 14:42:25,090 - INFO - Epoch [8/15], Train Loss: 1.5674, Train Accuracy: 0.8939, Val Loss: 1.5744, Val Accuracy: 0.8863
+2024-03-27 14:42:38,390 - INFO - Training model: LeNet5_baseline
+2024-03-27 14:42:38,390 - INFO - Epoch [9/15], Train Loss: 1.5619, Train Accuracy: 0.8990, Val Loss: 1.5753, Val Accuracy: 0.8849
+2024-03-27 14:42:51,751 - INFO - Training model: LeNet5_baseline
+2024-03-27 14:42:51,751 - INFO - Epoch [10/15], Train Loss: 1.5600, Train Accuracy: 0.9012, Val Loss: 1.5736, Val Accuracy: 0.8873
+2024-03-27 14:43:05,076 - INFO - Training model: LeNet5_baseline
+2024-03-27 14:43:05,076 - INFO - Epoch [11/15], Train Loss: 1.5577, Train Accuracy: 0.9035, Val Loss: 1.5721, Val Accuracy: 0.8886
+2024-03-27 14:43:18,568 - INFO - Training model: LeNet5_baseline
+2024-03-27 14:43:18,569 - INFO - Epoch [12/15], Train Loss: 1.5539, Train Accuracy: 0.9066, Val Loss: 1.5708, Val Accuracy: 0.8900
+2024-03-27 14:43:31,209 - INFO - Training model: LeNet5_baseline
+2024-03-27 14:43:31,210 - INFO - Epoch [13/15], Train Loss: 1.5524, Train Accuracy: 0.9089, Val Loss: 1.5723, Val Accuracy: 0.8887
+2024-03-27 14:43:44,522 - INFO - Training model: LeNet5_baseline
+2024-03-27 14:43:44,522 - INFO - Epoch [14/15], Train Loss: 1.5499, Train Accuracy: 0.9114, Val Loss: 1.5632, Val Accuracy: 0.8978
+2024-03-27 14:43:57,794 - INFO - Training model: LeNet5_baseline
+2024-03-27 14:43:57,794 - INFO - Epoch [15/15], Train Loss: 1.5477, Train Accuracy: 0.9136, Val Loss: 1.5730, Val Accuracy: 0.8883
