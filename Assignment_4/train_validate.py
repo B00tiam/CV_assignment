@@ -24,6 +24,7 @@ def paint(lr_his, train_loss_list, train_acc_list, val_loss_list, val_acc_list, 
     plt.legend()
     plt.savefig(save_path + '/acc_loss.png')
     plt.show()
+
     # draw lr graph
     plt.figure(figsize=(10, 6))
     plt.plot(lr_his, marker='o', linestyle='-')
