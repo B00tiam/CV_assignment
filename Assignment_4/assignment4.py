@@ -1,6 +1,7 @@
 from train_validate import train_validate
 from test import test
 from t_sne import calculate_tSNE
+from k_fold_val import cross_validation
 
 if __name__ == "__main__":
     num_epoch = 15
@@ -17,6 +18,10 @@ if __name__ == "__main__":
         train_validate(num_epoch, choice1_num, is_lr=0, is_improve=0)
         test(choice1_num, is_improve=0)
         calculate_tSNE(choice1_num, is_improve=0)
+    if choice2_num == 1:
+        K_str = input("Input the value of K:")
+        K_num = int(K_str)
+        cross_validation(K_num, num_epoch, choice1_num)
     if choice2_num == 2:
         train_validate(num_epoch, choice1_num, is_lr=0, is_improve=1)
         test(choice1_num, is_improve=1)
