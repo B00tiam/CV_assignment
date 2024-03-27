@@ -1,12 +1,45 @@
-2024-03-27 22:11:40,860 - INFO - Training model: LeNet5_baseline
-2024-03-27 22:11:40,860 - INFO - Epoch [1], Train Loss: 1.7259, Train Accuracy: 0.7383, Val Loss: 1.6542, Val Accuracy: 0.8093, Current lr: 0.001
-2024-03-27 22:11:40,860 - INFO - The best Accuracy: 0.8093333333333333, which belongs to Epoch [1]
-2024-03-27 22:11:55,007 - INFO - Training model: LeNet5_baseline
-2024-03-27 22:11:55,008 - INFO - Epoch [2], Train Loss: 1.6481, Train Accuracy: 0.8138, Val Loss: 1.6392, Val Accuracy: 0.8227, Current lr: 0.001
-2024-03-27 22:11:55,008 - INFO - The best Accuracy: 0.82275, which belongs to Epoch [2]
-2024-03-27 22:12:08,268 - INFO - Training model: LeNet5_baseline
-2024-03-27 22:12:08,269 - INFO - Epoch [3], Train Loss: 1.6368, Train Accuracy: 0.8249, Val Loss: 1.6323, Val Accuracy: 0.8289, Current lr: 0.001
-2024-03-27 22:12:08,269 - INFO - The best Accuracy: 0.8289166666666666, which belongs to Epoch [3]
-2024-03-27 22:12:20,914 - INFO - Training model: LeNet5_baseline
-2024-03-27 22:12:20,914 - INFO - Epoch [4], Train Loss: 1.6324, Train Accuracy: 0.8284, Val Loss: 1.6414, Val Accuracy: 0.8197, Current lr: 0.001
-2024-03-27 22:12:20,914 - INFO - The best Accuracy: 0.8289166666666666, which belongs to Epoch [3]
+2024-03-27 19:01:16,137 - INFO - Training model: LeNet5_baseline
+2024-03-27 19:01:16,138 - INFO - Epoch [1], Train Loss: 1.7679, Train Accuracy: 0.6962, Val Loss: 1.7224, Val Accuracy: 0.7401, Current lr: 0.001
+2024-03-27 19:01:16,139 - INFO - The best Accuracy: 0.7400833333333333, which belongs to Epoch [1]
+2024-03-27 19:01:41,203 - INFO - Training model: LeNet5_baseline
+2024-03-27 19:01:41,203 - INFO - Epoch [2], Train Loss: 1.7157, Train Accuracy: 0.7458, Val Loss: 1.7124, Val Accuracy: 0.7486, Current lr: 0.001
+2024-03-27 19:01:41,203 - INFO - The best Accuracy: 0.7485833333333334, which belongs to Epoch [2]
+2024-03-27 19:02:08,586 - INFO - Training model: LeNet5_baseline
+2024-03-27 19:02:08,586 - INFO - Epoch [3], Train Loss: 1.7070, Train Accuracy: 0.7541, Val Loss: 1.7111, Val Accuracy: 0.7500, Current lr: 0.001
+2024-03-27 19:02:08,596 - INFO - The best Accuracy: 0.75, which belongs to Epoch [3]
+2024-03-27 19:02:30,013 - INFO - Training model: LeNet5_baseline
+2024-03-27 19:02:30,013 - INFO - Epoch [4], Train Loss: 1.7023, Train Accuracy: 0.7589, Val Loss: 1.7036, Val Accuracy: 0.7578, Current lr: 0.001
+2024-03-27 19:02:30,014 - INFO - The best Accuracy: 0.7578333333333334, which belongs to Epoch [4]
+2024-03-27 19:02:57,184 - INFO - Training model: LeNet5_baseline
+2024-03-27 19:02:57,184 - INFO - Epoch [5], Train Loss: 1.6957, Train Accuracy: 0.7651, Val Loss: 1.6755, Val Accuracy: 0.7850, Current lr: 0.001
+2024-03-27 19:02:57,185 - INFO - The best Accuracy: 0.785, which belongs to Epoch [5]
+2024-03-27 19:03:24,174 - INFO - Training model: LeNet5_baseline
+2024-03-27 19:03:24,174 - INFO - Epoch [6], Train Loss: 1.6541, Train Accuracy: 0.8067, Val Loss: 1.6556, Val Accuracy: 0.8048, Current lr: 0.0005
+2024-03-27 19:03:24,174 - INFO - The best Accuracy: 0.8048333333333333, which belongs to Epoch [6]
+2024-03-27 19:03:51,531 - INFO - Training model: LeNet5_baseline
+2024-03-27 19:03:51,531 - INFO - Epoch [7], Train Loss: 1.6422, Train Accuracy: 0.8187, Val Loss: 1.6486, Val Accuracy: 0.8112, Current lr: 0.0005
+2024-03-27 19:03:51,531 - INFO - The best Accuracy: 0.8111666666666667, which belongs to Epoch [7]
+2024-03-27 19:04:18,871 - INFO - Training model: LeNet5_baseline
+2024-03-27 19:04:18,871 - INFO - Epoch [8], Train Loss: 1.6368, Train Accuracy: 0.8245, Val Loss: 1.6463, Val Accuracy: 0.8143, Current lr: 0.0005
+2024-03-27 19:04:18,871 - INFO - The best Accuracy: 0.81425, which belongs to Epoch [8]
+2024-03-27 19:04:48,984 - INFO - Training model: LeNet5_baseline
+2024-03-27 19:04:48,984 - INFO - Epoch [9], Train Loss: 1.6324, Train Accuracy: 0.8285, Val Loss: 1.6449, Val Accuracy: 0.8154, Current lr: 0.0005
+2024-03-27 19:04:48,984 - INFO - The best Accuracy: 0.8154166666666667, which belongs to Epoch [9]
+2024-03-27 19:05:13,993 - INFO - Training model: LeNet5_baseline
+2024-03-27 19:05:13,993 - INFO - Epoch [10], Train Loss: 1.6280, Train Accuracy: 0.8332, Val Loss: 1.6426, Val Accuracy: 0.8171, Current lr: 0.0005
+2024-03-27 19:05:13,994 - INFO - The best Accuracy: 0.8170833333333334, which belongs to Epoch [10]
+2024-03-27 19:05:36,482 - INFO - Training model: LeNet5_baseline
+2024-03-27 19:05:36,482 - INFO - Epoch [11], Train Loss: 1.6214, Train Accuracy: 0.8400, Val Loss: 1.6401, Val Accuracy: 0.8197, Current lr: 0.00025
+2024-03-27 19:05:36,482 - INFO - The best Accuracy: 0.81975, which belongs to Epoch [11]
+2024-03-27 19:06:00,920 - INFO - Training model: LeNet5_baseline
+2024-03-27 19:06:00,920 - INFO - Epoch [12], Train Loss: 1.6188, Train Accuracy: 0.8424, Val Loss: 1.6382, Val Accuracy: 0.8219, Current lr: 0.00025
+2024-03-27 19:06:00,920 - INFO - The best Accuracy: 0.8219166666666666, which belongs to Epoch [12]
+2024-03-27 19:06:26,610 - INFO - Training model: LeNet5_baseline
+2024-03-27 19:06:26,610 - INFO - Epoch [13], Train Loss: 1.6172, Train Accuracy: 0.8448, Val Loss: 1.6369, Val Accuracy: 0.8234, Current lr: 0.00025
+2024-03-27 19:06:26,610 - INFO - The best Accuracy: 0.8234166666666667, which belongs to Epoch [13]
+2024-03-27 19:06:53,898 - INFO - Training model: LeNet5_baseline
+2024-03-27 19:06:53,898 - INFO - Epoch [14], Train Loss: 1.6153, Train Accuracy: 0.8469, Val Loss: 1.6379, Val Accuracy: 0.8221, Current lr: 0.00025
+2024-03-27 19:06:53,898 - INFO - The best Accuracy: 0.8234166666666667, which belongs to Epoch [13]
+2024-03-27 19:07:21,149 - INFO - Training model: LeNet5_baseline
+2024-03-27 19:07:21,149 - INFO - Epoch [15], Train Loss: 1.6141, Train Accuracy: 0.8479, Val Loss: 1.6380, Val Accuracy: 0.8235, Current lr: 0.00025
+2024-03-27 19:07:21,149 - INFO - The best Accuracy: 0.8235, which belongs to Epoch [15]
