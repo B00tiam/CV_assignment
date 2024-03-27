@@ -100,9 +100,11 @@ def get_dir():
 
 def save_model(model, save_path):
     # save the trained model in the subdirectory
-    save_file = os.path.join(save_path, 'saved_model.pth')
-    torch.save(model.state_dict(), save_file)
-    print(f"Model saved in {save_file}.")
+    save_file1 = os.path.join(save_path, 'saved_model.pth')
+    save_file2 = os.path.join(save_path, 'saved_model.pt')
+    torch.save(model.state_dict(), save_file1)
+    torch.save(model, save_file2)
+    print(f"Model saved in {save_file2}.")
 
 def save_log(epoch, train_loss, train_acc, val_loss, val_acc, save_path, model_name, best_epoch, best_acc, cur_lr):
     # logging
