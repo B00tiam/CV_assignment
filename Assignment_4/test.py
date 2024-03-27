@@ -1,4 +1,4 @@
-from data_process import get_data
+from data_process import get_data, get_improved_data
 import models
 
 import os
@@ -49,7 +49,7 @@ def get_model(save_path, model):
     print(f"Model loaded from {save_file}.")
     return model
 
-def test(model_choice):
+def test(model_choice, is_improve):
     save_path = get_dir()
     # check if the device use GPU/CPU
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -72,7 +72,10 @@ def test(model_choice):
         model = models.LeNet5_var4().to(device)
 
     # get data
-    _, _, test_dataset = get_data()
+    if is_improve == 0:
+        _, _, test_dataset = get_data()
+    else:
+        _, _, test_dataset = get_improved_data()
     # load the saved model
     model = get_model(save_path, model)
     # test loader

@@ -1,4 +1,4 @@
-from data_process import get_data
+from data_process import get_data, get_improved_data
 import models
 
 import os
@@ -112,12 +112,15 @@ def save_log(epoch, train_loss, train_acc, val_loss, val_acc, save_path, model_n
     logging.info(f'Epoch [{epoch + 1}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Accuracy: {val_acc:.4f}, Current lr: {cur_lr}')
     logging.info(f'The best Accuracy: {best_acc}, which belongs to Epoch [{best_epoch + 1}]')
 
-def train_validate(num_epochs, model_choice):
+def train_validate(num_epochs, model_choice, is_lr, is_improve):
     # check if the device use GPU/CPU
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(device)
     # get data
-    train_dataset, val_dataset, _ = get_data()
+    if is_improve == 0:
+        train_dataset, val_dataset, _ = get_data()
+    else:
+        train_dataset, val_dataset, _ = get_improved_data()
     # get loader
     # train loader
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=64, shuffle=True)
@@ -171,6 +174,8 @@ def train_validate(num_epochs, model_choice):
         # learning rate
         cur_lr = optimizer.param_groups[0]['lr']
         lr_his.append(cur_lr)
+        if is_lr == 1:
+            scheduler.step()
         # compare the accuracy on validation:
         if val_acc > best_acc:
             best_model = model
@@ -179,7 +184,6 @@ def train_validate(num_epochs, model_choice):
 
         print(f"Epoch [{epoch+1}/{num_epochs}], Train Loss: {train_loss:.4f}, Train Accuracy: {train_acc:.4f}, Val Loss: {val_loss:.4f}, Val Accuracy: {val_acc:.4f}, Current lr: {cur_lr}")
         save_log(epoch, train_loss, train_acc, val_loss, val_acc, save_path, model_name, best_epoch, best_acc, cur_lr)
-        scheduler.step()
 
         train_acc_list.append(train_acc)
         train_loss_list.append(train_loss)
